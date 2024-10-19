@@ -40,7 +40,7 @@ model User {
     username            String              @unique
     netId               String              @unique
     displayName         String
-    pfpKey              String
+    pfpKey              String              @default("")
 
     posts               Post[]              @relation("UserPost")
 
