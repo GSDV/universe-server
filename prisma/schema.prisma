@@ -1,0 +1,182 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+
+
+
+
+// Because postgres does not allow prisma types, must use a Coordinate model instead
+// A coordinate may only be used for a post OR a zone, NOT both
+model Coordinate {
+    id      String      @id @default(cuid())
+    lat     Decimal
+    lng     Decimal
+
+    post    Post?       @relation("PostLocation", fields: [postId], references: [id])
+    postId  String?     @unique
+
+    zone    Zone?       @relation("ZoneBoundaryPoints", fields: [zoneId], references: [id])
+    zoneId  String?
+}
+
+
+
+model User {
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
+    id                  String              @id @default(cuid())
+
+    password            String
+    salt                String
+
+    username            String              @unique
+    netId               String              @unique
+    displayName         String
+    pfpKey              String
+
+    posts               Post[]              @relation("UserPost")
+
+    // All reports this user has made on posts
+    reports             PostReport[]        @relation("Reporter")
+
+    // Auth tokens issued to a user. ALL tokens in the array are valid
+    authTokens          AuthToken[]         @relation("UserAuthToken")
+    // Reset password tokens issued to a user. Only the last token in the array is valid.
+    rpTokens            RPToken[]           @relation("UserRPToken")
+
+    // Has the account been activated through email?
+    active              Boolean             @default(false)
+    activateTokens      ActivateToken[]     @relation("EmailVerificationToken")
+
+    deleted             Boolean             @default(false)
+
+    banned              Boolean             @default(false)
+    banExpiration       DateTime?
+    banMsg              String?
+}
+
+
+
+model Post {
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
+    id                  String              @id @default(cuid())
+
+    displayDate         DateTime            @default(now())
+
+    // Seller who posted the post
+    authorId            String
+    author              User                @relation("UserPost", fields: [authorId], references: [id], onDelete: Cascade)
+
+    // Has the post expired or been deleted?
+    deleted             Boolean             @default(false)
+
+    // All reports this post has gotten
+    reports             PostReport[]        @relation("ReportedPost")
+
+    content             String
+    images              String[]
+    // location            Coordinate
+    location    Coordinate? @relation("PostLocation")
+
+
+    where               String
+
+    pinned              Boolean
+}
+
+
+
+model Zone {
+    createdAt   DateTime        @default(now())
+    updatedAt   DateTime        @updatedAt
+    id          String          @id @default(cuid())
+
+    // Name used for internal use, not displayed
+    name        String
+    // Tag displayed on posts (e.g. "From the Illini Union")
+    tag         String
+
+    boundaries  Coordinate[]    @relation("ZoneBoundaryPoints")
+}
+
+
+
+// Account activation tokens, sent by email
+model ActivateToken {
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
+    id                  String              @id @default(cuid())
+
+    token               String              @unique
+    // The amount of (unsuccessful) times a user has tried to use this activate token to activate account
+    // If too many are attempted, most likely a malicious user is guessing - mark the token as expired
+    // "expired" is not to be used in any other context, tokens are automatcially deleted after a set time
+    attempts            Int                 @default(0)
+    expired             Boolean             @default(false)
+
+    userId              String
+    user                User                @relation("EmailVerificationToken", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+
+// Token given to users to authorize account actions
+model AuthToken {
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
+    id                  String              @id @default(cuid())
+
+    token               String              @unique
+
+    userId              String
+    user                User                @relation("UserAuthToken", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+
+// Token send to a user's email to reset password
+model RPToken {
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
+    id                  String              @id @default(cuid())
+
+    token               String
+    // The amount of (unsuccessful) times a user has tried to use this RP token to reset a password
+    // If too many are attempted, most likely a malicious user is guessing - mark the token as expired
+    // "expired" is not to be used in any other context, tokens are automatcially deleted after a set time
+    attempts            Int                 @default(0)
+    expired             Boolean             @default(false)
+
+    userId              String
+    user                User                @relation("UserRPToken", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+
+// Reporter is required, but if an account is deleted the reports still are available in the database (hence the "?"s)
+model PostReport {
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
+    id                  String              @id @default(cuid())
+
+    msg                 String
+
+    reporterId          String?
+    reporter            User?               @relation("Reporter", fields: [reporterId], references: [id], onDelete: SetNull)
+
+    reportedPostId      String
+    reportedPost        Post                @relation("ReportedPost", fields: [reportedPostId], references: [id], onDelete: Cascade)
+}
