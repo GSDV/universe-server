@@ -24,11 +24,12 @@ model Coordinate {
     lat     Decimal
     lng     Decimal
 
-    post    Post?       @relation("PostLocation", fields: [postId], references: [id])
     postId  String?     @unique
+    post    Post?       @relation("PostLocation", fields: [postId], references: [id])
 
-    zone    Zone?       @relation("ZoneBoundaryPoints", fields: [zoneId], references: [id])
     zoneId  String?
+    zone    Zone?       @relation("ZoneBoundaryPoints", fields: [zoneId], references: [id])
+
 }
 
 
@@ -88,8 +89,7 @@ model Post {
 
     content             String
     images              String[]
-    // location            Coordinate
-    location    Coordinate? @relation("PostLocation")
+    location            Coordinate?         @relation("PostLocation")
 
 
     where               String
