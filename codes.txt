@@ -1,0 +1,18 @@
+Custom Status Codes (cStatus)
+
+
+
+1XX: General Errors
+- 100: Unknown, unspecific error.
+- 101: Some fields of data (which should've been provided by the user) are empty / do not exist.
+- 102: Some fields of data (which are provided by the user) have invalid or incorrect data.
+- 110: Unknown operation.
+
+
+
+9XX: Relating to Prisma calls
+- 900: Unknown Prisma error.
+- 903: Error from a create call.
+- 904: Error from a read call.
+- 905: Error from an update call.
+- 906: Error from a delete call.
