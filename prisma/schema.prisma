@@ -88,6 +88,11 @@ model Post {
     location            Coordinate?         @relation("PostLocation")
     where               String
     pinned              Boolean             @default(false)
+
+    replyToId           String?             // ID of the post this post is replying to
+    replyTo             Post?               @relation("PostReplies", fields: [replyToId], references: [id])
+
+    replies             Post[]              @relation("PostReplies")
 }
 
 
