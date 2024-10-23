@@ -41,6 +41,7 @@ model User {
     email               String              @unique
     displayName         String
     pfpKey              String              @default("")
+    university          String              @default("University of Illinois")
 
     posts               Post[]              @relation("UserPost")
 
