@@ -38,7 +38,7 @@ model User {
     salt                String
 
     username            String              @unique
-    netId               String              @unique
+    email               String              @unique
     displayName         String
     pfpKey              String              @default("")
 
