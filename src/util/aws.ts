@@ -59,6 +59,6 @@ export const getSignedS3Url = async (prefix: string, type: string) => {
         ContentType: type
     });
 
-    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 60 });
+    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
     return {signedUrl, key};
 }
