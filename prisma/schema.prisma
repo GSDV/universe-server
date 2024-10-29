@@ -24,7 +24,21 @@ model Coordinate {
 
     zoneId  String?
     zone    Zone?       @relation("ZoneBoundaryPoints", fields: [zoneId], references: [id])
+}
 
+
+
+enum MediaType {
+    IMAGE
+    VIDEO
+}
+model Media {
+    id      String      @id @default(cuid())
+    type    MediaType
+    key     String
+
+    postId  String
+    post    Post        @relation("Media", fields: [postId], references: [id])
 }
 
 
@@ -84,7 +98,8 @@ model Post {
     reports             PostReport[]        @relation("ReportedPost")
 
     content             String
-    images              String[]
+    // media               String[]
+    media               Media[]             @relation("Media")
     location            Coordinate?         @relation("PostLocation")
     where               String
     pinned              Boolean             @default(false)
