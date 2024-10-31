@@ -45,7 +45,7 @@ enum MediaType {
 model Media {
     id      String      @id @default(cuid())
     type    MediaType
-    key     String
+    key     String      @unique
 
     postId  String
     post    Post        @relation("Media", fields: [postId], references: [id])
