@@ -21,10 +21,20 @@ model Coordinate {
 
     postId  String?     @unique
     post    Post?       @relation("PostLocation", fields: [postId], references: [id])
-
-    zoneId  String?
-    zone    Zone?       @relation("ZoneBoundaryPoints", fields: [zoneId], references: [id])
 }
+
+
+
+model University {
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    id          String    @id @default(cuid())
+
+    domain      String    @unique // "... .edu"
+    name        String
+    color       String
+    users       User[]    
+} 
 
 
 
@@ -55,7 +65,9 @@ model User {
     email               String              @unique
     displayName         String
     pfpKey              String              @default("")
-    university          String              @default("University of Illinois")
+
+    universityId        String?
+    university          University?         @relation(fields: [universityId], references: [id])
 
     posts               Post[]              @relation("UserPost")
 
@@ -98,7 +110,6 @@ model Post {
     reports             PostReport[]        @relation("ReportedPost")
 
     content             String
-    // media               String[]
     media               Media[]             @relation("Media")
     location            Coordinate?         @relation("PostLocation")
     where               String
@@ -108,21 +119,6 @@ model Post {
     replyTo             Post?               @relation("PostReplies", fields: [replyToId], references: [id])
 
     replies             Post[]              @relation("PostReplies")
-}
-
-
-
-model Zone {
-    createdAt   DateTime        @default(now())
-    updatedAt   DateTime        @updatedAt
-    id          String          @id @default(cuid())
-
-    // Name used for internal use, not displayed
-    name        String
-    // Tag displayed on posts (e.g. "From the Illini Union")
-    tag         String
-
-    boundaries  Coordinate[]    @relation("ZoneBoundaryPoints")
 }
 
 
