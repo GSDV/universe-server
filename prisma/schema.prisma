@@ -10,21 +10,6 @@ datasource db {
 
 
 
-
-
-// Because postgres does not allow prisma types, must use a Coordinate model instead
-// A coordinate may only be used for a post OR a zone, NOT both
-model Coordinate {
-    id      String      @id @default(cuid())
-    lat     Decimal
-    lng     Decimal
-
-    postId  String?     @unique
-    post    Post?       @relation("PostLocation", fields: [postId], references: [id])
-}
-
-
-
 model University {
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
@@ -111,8 +96,8 @@ model Post {
 
     content             String
     media               Media[]             @relation("Media")
-    location            Coordinate?         @relation("PostLocation")
-    where               String
+    lat                 Decimal
+    lng                 Decimal
     pinned              Boolean             @default(false)
 
     replyToId           String?             // ID of the post this post is replying to
