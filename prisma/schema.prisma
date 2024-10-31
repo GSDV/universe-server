@@ -10,6 +10,8 @@ datasource db {
 
 
 
+
+
 model University {
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
@@ -20,21 +22,6 @@ model University {
     color       String
     users       User[]    
 } 
-
-
-
-enum MediaType {
-    IMAGE
-    VIDEO
-}
-model Media {
-    id      String      @id @default(cuid())
-    type    MediaType
-    key     String      @unique
-
-    postId  String
-    post    Post        @relation("Media", fields: [postId], references: [id])
-}
 
 
 
@@ -95,7 +82,7 @@ model Post {
     reports             PostReport[]        @relation("ReportedPost")
 
     content             String
-    media               Media[]             @relation("Media")
+    media               String[]            @unique
     lat                 Decimal
     lng                 Decimal
     pinned              Boolean             @default(false)
