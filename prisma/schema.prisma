@@ -83,8 +83,9 @@ model Post {
 
     content             String
     media               String[]            @unique
-    lat                 Decimal
-    lng                 Decimal
+    hasLocation         Boolean
+    lat                 Decimal?
+    lng                 Decimal?
     pinned              Boolean             @default(false)
 
     replyToId           String?             // ID of the post this post is replying to
