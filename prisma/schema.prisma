@@ -84,7 +84,7 @@ model Post {
     reports             PostReport[]        @relation("ReportedPost")
 
     content             String
-    media               String[]            @unique
+    media               String[]
     hasLocation         Boolean
     lat                 Decimal?
     lng                 Decimal?
