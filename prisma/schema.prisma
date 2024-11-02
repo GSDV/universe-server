@@ -45,6 +45,9 @@ model User {
 
     posts               Post[]              @relation("UserPost")
 
+    // All posts a user has liked
+    likes              Like[]              @relation("UserLikes")
+
     // All reports this user has made on posts
     reports             PostReport[]        @relation("Reporter")
 
@@ -90,10 +93,32 @@ model Post {
     lng                 Decimal?
     pinned              Boolean             @default(false)
 
+    likeCount           Int                 @default(0)
+    likes               Like[]              @relation("PostLikes")
+
     replyToId           String?             // ID of the post this post is replying to
     replyTo             Post?               @relation("PostReplies", fields: [replyToId], references: [id])
 
     replies             Post[]              @relation("PostReplies")
+}
+
+
+
+// A user's like on a post.
+// Separate 
+model Like {
+    id                 String              @id @default(cuid())
+    createdAt          DateTime            @default(now())
+    
+    userId             String
+    user               User                @relation("UserLikes", fields: [userId], references: [id], onDelete: Cascade)
+    
+    postId             String
+    post               Post                @relation("PostLikes", fields: [postId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, postId])
+    @@index([postId])
+    @@index([userId])
 }
 
 
