@@ -41,6 +41,8 @@ model User {
     universityId        String?
     university          University?         @relation(fields: [universityId], references: [id])
 
+    verified            Boolean             @default(false)
+
     posts               Post[]              @relation("UserPost")
 
     // All reports this user has made on posts
