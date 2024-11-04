@@ -1,5 +1,5 @@
 {
-  "name": "illini-notes-server",
+  "name": "universe-server",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,16 +9,27 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.14"
+    "@aws-sdk/client-s3": "^3.679.0",
+    "@aws-sdk/s3-request-presigner": "^3.679.0",
+    "@prisma/client": "^5.20.0",
+    "@sendgrid/mail": "^8.1.4",
+    "@vercel/functions": "^1.4.2",
+    "bcryptjs": "^2.4.3",
+    "next": "^15.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "uuid": "^10.0.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^10.0.0",
     "eslint": "^8",
-    "eslint-config-next": "14.2.14"
+    "eslint-config-next": "14.2.14",
+    "prisma": "^5.21.1",
+    "typescript": "^5"
   }
 }
