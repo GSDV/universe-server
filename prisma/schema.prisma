@@ -80,7 +80,7 @@ model Post {
     authorId            String
     author              User                @relation("UserPost", fields: [authorId], references: [id], onDelete: Cascade)
 
-    // Has the post expired or been deleted?
+    // Has the post been deleted?
     deleted             Boolean             @default(false)
 
     // All reports this post has gotten
@@ -105,7 +105,7 @@ model Post {
 
 
 // A user's like on a post.
-// Separate 
+// Separate model to improve database operations and lookups.
 model Like {
     id                 String              @id @default(cuid())
     createdAt          DateTime            @default(now())
