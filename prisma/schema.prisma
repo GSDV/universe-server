@@ -99,6 +99,7 @@ model Post {
     replyToId           String?             // ID of the post this post is replying to
     replyTo             Post?               @relation("PostReplies", fields: [replyToId], references: [id])
 
+    replyCount          Int                 @default(0)
     replies             Post[]              @relation("PostReplies")
 }
 
