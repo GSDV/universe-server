@@ -36,9 +36,14 @@ export const fetchRootPosts = async (authorId: string, pageNumber: number, logge
         take: POST_PER_SCROLL + 1 // Fetch one more to see if there are more posts available
     });
 
-    const moreAvailable = posts.length > POST_PER_SCROLL;
-    if (moreAvailable) posts.pop();
-    return { posts, moreAvailable };
+    const clientPosts = posts.map(p => ({
+            ...p,
+            isLiked: p.likeCount != 0
+    }));
+
+    const moreAvailable = clientPosts.length > POST_PER_SCROLL;
+    if (moreAvailable) clientPosts.pop();
+    return { posts: clientPosts, moreAvailable };
 }
 
 // Only fetch a user's pinned post
