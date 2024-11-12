@@ -3,7 +3,7 @@
 import { prisma } from '@util/prisma/client';
 import { Prisma } from '@prisma/client';
 
-import { getUserLike, POST_PER_SCROLL, redactUserOmits } from '@util/global-server';
+import { COUNT_REPLIES, getUserLike, POST_PER_SCROLL, REDACT_USER_OMITS } from '@util/global-server';
 
 
 
@@ -31,14 +31,15 @@ export const fetchRootPosts = async (authorId: string, pageNumber: number, logge
     const posts = await prisma.post.findMany({
         where: { authorId, pinned: false, replyToId: null },
         orderBy: { displayDate: 'desc' },
-        include: { author: { include: { university: true }, ...redactUserOmits }, likes: getUserLike(loggedInUserId) },
+        include: { author: { include: { university: true }, ...REDACT_USER_OMITS }, likes: getUserLike(loggedInUserId), ...COUNT_REPLIES },
         skip: POST_PER_SCROLL*(pageNumber-1),
         take: POST_PER_SCROLL + 1 // Fetch one more to see if there are more posts available
     });
 
     const clientPosts = posts.map(p => ({
             ...p,
-            isLiked: p.likeCount != 0
+            isLiked: p.likeCount != 0,
+            replyCount: p._count.replies
     }));
 
     const moreAvailable = clientPosts.length > POST_PER_SCROLL;
@@ -50,13 +51,14 @@ export const fetchRootPosts = async (authorId: string, pageNumber: number, logge
 export const fetchPinnedPost = async(authorId: string, loggedInUserId: string) => {
     const pinnedPost = await prisma.post.findFirst({
         where: { authorId, pinned: true },
-        include: { author: { include: { university: true }, ...redactUserOmits }, likes: getUserLike(loggedInUserId) }
+        include: { author: { include: { university: true }, ...REDACT_USER_OMITS }, likes: getUserLike(loggedInUserId), ...COUNT_REPLIES }
     });
     if (!pinnedPost) return null;
 
     const clientPinnedPost = {
-            ...pinnedPost,
-            isLiked: pinnedPost.likeCount != 0
+        ...pinnedPost,
+        isLiked: pinnedPost.likeCount != 0,
+        replyCount: pinnedPost._count.replies
     };
 
     return clientPinnedPost;
