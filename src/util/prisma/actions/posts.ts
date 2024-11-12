@@ -52,7 +52,14 @@ export const fetchPinnedPost = async(authorId: string, loggedInUserId: string) =
         where: { authorId, pinned: true },
         include: { author: { include: { university: true }, ...redactUserOmits }, likes: getUserLike(loggedInUserId) }
     });
-    return pinnedPost;
+    if (!pinnedPost) return null;
+
+    const clientPinnedPost = {
+            ...pinnedPost,
+            isLiked: pinnedPost.likeCount != 0
+    };
+
+    return clientPinnedPost;
 }
 
 
