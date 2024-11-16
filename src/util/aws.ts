@@ -1,7 +1,9 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
 import { v4 as uuidv4 } from 'uuid';
-import { ACCEPTED_IMGS, ACCEPTED_VIDS } from './global';
+
+import { ACCEPTED_IMGS } from '@util/global';
 
 
 
@@ -23,7 +25,7 @@ export const uploadToS3 = async (buffer: Buffer, key: string, type: string) => {
         ContentType: type
     }
     const cmd = new PutObjectCommand(params);
-    const res = await s3Client.send(cmd);
+    await s3Client.send(cmd);
 }
 
 
@@ -46,7 +48,7 @@ export const deleteFromS3 = async (key: string) => {
         Key: key
     }
     const cmd = new DeleteObjectCommand(params);
-    const res = await s3Client.send(cmd);
+    await s3Client.send(cmd);
 }
 
 
