@@ -1,6 +1,7 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
+import { ACCEPTED_IMGS, ACCEPTED_VIDS } from './global';
 
 
 
@@ -50,13 +51,14 @@ export const deleteFromS3 = async (key: string) => {
 
 
 
-export const getSignedS3Url = async (prefix: string, type: string) => {
-    const key = prefix + uuidv4();
+export const getSignedS3Url = async (prefix: string, fileType: string) => {
+    const type = (ACCEPTED_IMGS.includes(fileType)) ? 'image' : 'video';
+    const key = prefix + uuidv4() + '-' + type;
 
     const command = new PutObjectCommand({
         Bucket: process.env.S3_BUCKET_NAME,
         Key: key,
-        ContentType: type
+        ContentType: fileType
     });
 
     const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: (60*5) });
