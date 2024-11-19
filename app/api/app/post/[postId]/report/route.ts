@@ -4,6 +4,7 @@ import { getValidatedUser } from '@util/prisma/actions/user';
 
 import { MAX_REPORT_LENGTH } from '@util/global';
 import { response } from '@util/global-server';
+
 import { createReport, getReport } from '@util/prisma/actions/reports';
 
 
@@ -18,7 +19,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pos
         const report = reportText.trim();
         if (report.length == 0) return response(`Report text is empty.`, 102);
         if (report.length > MAX_REPORT_LENGTH) return response(`Report text is too long.`, 102);
-
 
         const resValidUser = await getValidatedUser();
         if (!resValidUser.user) return resValidUser.res;
