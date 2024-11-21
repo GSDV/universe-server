@@ -101,6 +101,13 @@ model Post {
 
     replyCount          Int                 @default(0)
     replies             Post[]              @relation("PostReplies")
+
+    // For thread traversal
+    threadRootId        String?             // ID of the root post of this thread
+    threadRoot          Post?               @relation("ThreadPosts", fields: [threadRootId], references: [id])
+    threadPosts         Post[]              @relation("ThreadPosts")
+
+    @@index([threadRootId])
 }
 
 
