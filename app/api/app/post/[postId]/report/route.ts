@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pos
         if (report.length > MAX_REPORT_LENGTH) return response(`Report text is too long.`, 102);
 
         const resValidUser = await getValidatedUser();
-        if (!resValidUser.user) return resValidUser.res;
+        if (!resValidUser.user) return resValidUser.resp;
         const userPrisma = resValidUser.user;
 
         const reportPrisma = await getReport(userPrisma.id, postId);
