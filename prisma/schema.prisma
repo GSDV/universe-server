@@ -56,10 +56,6 @@ model User {
     // Reset password tokens issued to a user. Only the last token in the array is valid.
     rpTokens            RPToken[]           @relation("UserRPToken")
 
-    // Has the account been activated through email?
-    active              Boolean             @default(false)
-    activateTokens      ActivateToken[]     @relation("EmailVerificationToken")
-
     deleted             Boolean             @default(false)
 
     banned              Boolean             @default(false)
@@ -144,8 +140,11 @@ model ActivateToken {
     attempts            Int                 @default(0)
     expired             Boolean             @default(false)
 
-    userId              String
-    user                User                @relation("EmailVerificationToken", fields: [userId], references: [id], onDelete: Cascade)
+    displayName         String
+    username            String              @unique
+    email               String              @unique
+    password            String
+    salt                String
 }
 
 
