@@ -6,12 +6,48 @@ Custom Status Codes (cStatus)
 - 100: Unknown, unspecific error.
 - 101: Some fields of data (which should've been provided by the user) are empty / do not exist.
 - 102: Some fields of data (which are provided by the user) have invalid or incorrect data.
+- 103: No auth token cookie provided.
 - 110: Unknown operation.
+- 199: Intentionally obfuscating error.
+
+
+
+4XX: Relating to Users
+- 400: Unknown error with a Prisma call relating to the User schema.
+- 401: User is not logged in (did not provide an auth token).
+- 402: User is not logged in (provided invalid auth token).
+- 403: User did not provide the correct password when logging in.
+- 404: User not found, cannot run a command for a nonexistent user.
+- 405: This user already exists (cannot create new user with same email).
+- 406: This account is already active (cannot send a verification email).
+- 410: Account has been banned and no authorizing actions are allowed.
+- 411: Account has been deleted and must be reactivated by the user before actions are allowed.
+- 412: Account is not activated yet and and must be verified through email before actions are allowed.
+- 413: Account is unathorized for this action.
+- 430: Trying action on post that doesn't exist.
+- 433: Trying action on post that is deleted.
+- 440: Trying duplicate action (reporting post twice).
+
+
+
+5XX: Relating to Tokens (Auth and Activation)
+- 500: Unknown error with tokens.
+- 501: Token is not real.
+- 502: Token is expired.
+- 510: User requested another token, but the last token has not expired yet.
+- 520: User trying to use a token not associated with his account.
+
+
+
+6XX: Relating to Posts
+- 500: Unknown error with posts.
+- 504: Could not find post.
 
 
 
 9XX: Relating to Prisma calls
 - 900: Unknown Prisma error.
+- 901: A unique-labeled field was set to a duplicate value.
 - 903: Error from a create call.
 - 904: Error from a read call.
 - 905: Error from an update call.
