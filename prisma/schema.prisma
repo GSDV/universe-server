@@ -135,17 +135,14 @@ model ActivateToken {
     id                  String              @id @default(cuid())
 
     token               String              @unique
+
     // The amount of (unsuccessful) times a user has tried to use this activate token to activate account
     // If too many are attempted, most likely a malicious user is guessing - mark the token as expired
     // "expired" is not to be used in any other context, tokens are automatcially deleted after a set time
     attempts            Int                 @default(0)
     expired             Boolean             @default(false)
 
-    displayName         String
-    username            String              @unique
     email               String              @unique
-    password            String
-    salt                String
 }
 
 
