@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
         if (userUsernamePrisma) return response(`Username is already taken.`, 405);
 
         const prevActivationToken = await getActivateToken({ email });
-        if (!isActivateTokenExpired(prevActivationToken)) return response(`Already has unexpired token.`, 203);
+        if (!isActivateTokenExpired(prevActivationToken)) return response(`Please wait before requesting another verification email.`, 510);
         await deleteActivateTokens({ email });
 
         const activationToken = await createActivateToken(email);
@@ -73,10 +73,10 @@ export async function PUT(req: NextRequest) {
 
         const activateTokenPrisma = await getActivateToken({ email, expired: false });
         if (!activateTokenPrisma) return response(`Request a new verification email.`, 501);
-        if (activateTokenPrisma.attempts >= MAX_ACTIVATE_TOKEN_ATTEMPTS) return response(`You have attempted too many times`, 530);
+        if (activateTokenPrisma.attempts >= MAX_ACTIVATE_TOKEN_ATTEMPTS) return response(`You have attempted too many times, request a new verification email.`, 530);
         if (isActivateTokenExpired(activateTokenPrisma)) {
             waitUntil(deleteActivateTokens({ email }));
-            return response(`Request a new verification email`, 502);
+            return response(`Request a new verification email.`, 502);
         }
 
         if (codeStr.toUpperCase() !== activateTokenPrisma.token) {
