@@ -48,6 +48,12 @@ model User {
     // All posts a user has liked
     likes              Like[]              @relation("UserLikes")
 
+    followerCount       Int                 @default(0)
+    followers           Follow[]            @relation("Following")
+
+    followingCount      Int                 @default(0)
+    following           Follow[]            @relation("Followers")
+
     // All reports this user has made on posts
     reports             PostReport[]        @relation("Reporter")
 
@@ -61,6 +67,23 @@ model User {
     banned              Boolean             @default(false)
     banExpiration       DateTime?
     banMsg              String?
+}
+
+
+
+model Follow {
+    id                  String              @id @default(cuid())
+    createdAt           DateTime            @default(now())
+
+    followerId          String
+    follower            User                @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
+
+    followingId         String
+    following           User                @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+    @@unique([followerId, followingId])
+    @@index([followerId])
+    @@index([followingId])
 }
 
 
