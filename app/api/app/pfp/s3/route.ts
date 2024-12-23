@@ -5,7 +5,7 @@ import { getValidatedUser } from '@util/prisma/actions/user';
 import { ACCEPTED_IMGS, IMG_SIZE_LIMIT, IMG_SIZE_LIMIT_TXT, userPfpKey } from '@util/global';
 import { response } from '@util/global-server';
 
-import { getSignedS3Url } from '@util/aws';
+import { getSignedS3PfpUrl } from '@util/aws';
 
 
 
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
         if (fileSize > IMG_SIZE_LIMIT) return response(`Upload images less than ${IMG_SIZE_LIMIT_TXT}.`, 102);
 
         const prefix = userPfpKey(userPrisma.id);
-        const { signedUrl, key } = await getSignedS3Url(prefix, fileType);
+        const { signedUrl, key } = await getSignedS3PfpUrl(prefix, fileType);
         return response(`Success`, 200, { signedUrl, key });
     } catch (err) {
         return response(`Server error: ${err}`, 900);
