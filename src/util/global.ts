@@ -43,6 +43,8 @@ export const ACCEPTED_VIDS = ['video/mp4', 'video/quicktime'];
 export const ACCEPTED_FILES = [...ACCEPTED_IMGS, ...ACCEPTED_VIDS];
 export const IMG_SIZE_LIMIT = 10 * 1000000;
 export const IMG_SIZE_LIMIT_TXT = `10mb`;
+export const AVATAR_SIZE_LIMIT = 20 * 1000;
+export const AVATAR_SIZE_LIMIT_TXT = `20kb`;
 export const VID_SIZE_LIMIT = 50 * 1000000;
 export const VID_SIZE_LIMIT_TXT = `50mb`;
 
