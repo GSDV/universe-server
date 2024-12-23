@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { getValidatedUser } from '@util/prisma/actions/user';
 
-import { ACCEPTED_IMGS, IMG_SIZE_LIMIT, IMG_SIZE_LIMIT_TXT, pfpKeyPrefix } from '@util/global';
+import { ACCEPTED_IMGS, IMG_SIZE_LIMIT, IMG_SIZE_LIMIT_TXT, userPfpKey } from '@util/global';
 import { response } from '@util/global-server';
 
 import { getSignedS3Url } from '@util/aws';
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
         if (!ACCEPTED_IMGS.includes(fileType)) return response(`Upload only png, jpg, or webp files.`, 102);
         if (fileSize > IMG_SIZE_LIMIT) return response(`Upload images less than ${IMG_SIZE_LIMIT_TXT}.`, 102);
 
-        const prefix = pfpKeyPrefix(userPrisma.id);
+        const prefix = userPfpKey(userPrisma.id);
         const { signedUrl, key } = await getSignedS3Url(prefix, fileType);
         return response(`Success`, 200, { signedUrl, key });
     } catch (err) {
