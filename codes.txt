@@ -22,7 +22,6 @@ Custom Status Codes (cStatus)
 - 406: This account is already active (cannot send a verification email).
 - 410: Account has been banned and no authorizing actions are allowed.
 - 411: Account has been deleted and must be reactivated by the user before actions are allowed.
-- 412: Account is not activated yet and and must be verified through email before actions are allowed.
 - 413: Account is unathorized for this action.
 - 430: Trying action on post that doesn't exist.
 - 433: Trying action on post that is deleted.
@@ -36,6 +35,7 @@ Custom Status Codes (cStatus)
 - 502: Token is expired.
 - 510: User requested another token, but the last token has not expired yet.
 - 520: User trying to use a token not associated with his account.
+- 530: User has used a token too many times.
 
 
 
