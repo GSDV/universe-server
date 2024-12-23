@@ -51,6 +51,6 @@ export const MAX_REPORT_LENGTH = 250;
 
 
 // AWS S3 Links
-export const pfpKeyPrefix = (authorId: string) => `users/${authorId}/avatar`;
+export const userPfpKey = (authorId: string) => `users/${authorId}/avatar`;
 export const mediaKeyPrefix = (authorId: string) => `users/${authorId}/posts/`;
 export const mediaUrl = (mediaKey: string) => `https://uni-verse.s3.us-east-2.amazonaws.com/${mediaKey}`;
