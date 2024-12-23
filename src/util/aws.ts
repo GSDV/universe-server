@@ -66,3 +66,16 @@ export const getSignedS3Url = async (prefix: string, fileType: string) => {
     const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: (60*5) });
     return {signedUrl, key};
 }
+
+
+
+export const getSignedS3PfpUrl = async (key: string, fileType: string) => {
+    const command = new PutObjectCommand({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: key,
+        ContentType: fileType
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: (60*5) });
+    return {signedUrl, key};
+}
