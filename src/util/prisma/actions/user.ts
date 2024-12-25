@@ -4,11 +4,12 @@ import { prisma } from '@util/prisma/client';
 
 import { cookies } from 'next/headers';
 
-import { isValidUser, makePasswordHash, redactUserPrisma } from '@util/api/user';
-
 import { Prisma } from '@prisma/client';
+
 import { AUTH_TOKEN_COOKIE_KEY } from '@util/global';
 import { OMIT_USER, response } from '@util/global-server';
+
+import { isValidUser, makePasswordHash, redactUserPrisma } from '@util/api/user';
 
 
 
@@ -46,7 +47,8 @@ export const createUser = async (displayName: string, username: string, email: s
 export const updateUser = async (where: Prisma.UserWhereUniqueInput, data: Prisma.UserUpdateInput ) => {
     const userPrisma = await prisma.user.update({
         where,
-        data
+        data,
+        include: { university: true }
     });
     return userPrisma;
 }
