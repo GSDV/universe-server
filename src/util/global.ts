@@ -36,6 +36,8 @@ export const isValidDisplayName = (input: string) => (input.length > 0 && input.
 // POST RESTRICTIONS
 export const MIN_POST_CONTENT_LENGTH = 2;
 export const MAX_POST_CONTENT_LENGTH = 200;
+export const MIN_REPLY_CONTENT_LENGTH = 2;
+export const MAX_REPLY_CONTENT_LENGTH = 200;
 export const MAX_POST_MEDIA = 4;
 
 export const ACCEPTED_IMGS = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
