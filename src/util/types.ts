@@ -6,9 +6,23 @@ import { MAX_POST_CONTENT_LENGTH, MAX_POST_MEDIA, MIN_POST_CONTENT_LENGTH } from
 
 
 
+export type REDACT_USER_OMITS_TYPE = {
+    createdAt: true,
+    updatedAt: true,
+    email: true,
+    password: true,
+    salt: true,
+    deleted: true,
+    banned: true,
+    banExpiration: true,
+    banMsg: true
+};
+
 export type User = Prisma.UserGetPayload<{}>;
-export type RedactedUser = Prisma.UserGetPayload<{ omit: {password: true, salt: true} }>;
-export type RedactedUserWithPosts = Prisma.UserGetPayload<{ omit: {password: true, salt: true}, include: {posts: true} }>;
+export type UserWithUni = Prisma.UserGetPayload<{ include: {university: true} }>;
+export type RedactedUser = Prisma.UserGetPayload<{ omit: REDACT_USER_OMITS_TYPE }>;
+export type RedactedUserWithUni = Prisma.UserGetPayload<{ omit: REDACT_USER_OMITS_TYPE, include: {university: true} }>;
+export type RedactedUserWithPosts = Prisma.UserGetPayload<{ omit: REDACT_USER_OMITS_TYPE, include: {posts: true} }>;
 
 
 
