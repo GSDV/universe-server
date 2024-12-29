@@ -122,7 +122,7 @@ model Post {
     replies             Post[]              @relation("PostReplies")
 
     // Root post: Empty
-    // Reply post: Contains all direct ancestor posts. FIrst post is the root
+    // Reply post: Contains all direct ancestor posts. First post is the root
     threadPosts         Post[]              @relation("ThreadPosts")
 
     // Unused
