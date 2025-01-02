@@ -128,3 +128,23 @@ export const getValidatedUserWithUni = async () => {
 
     return { userPrisma: redactUserPrisma(userPrisma) };
 }
+
+
+
+// Mark user and all posts as delete.
+export const markUserDelete = async (userId: string) => {
+    const result = await prisma.$transaction(async (tx) => {
+        await tx.post.updateMany({
+            where: { authorId: userId },
+            data: { deleted: true }
+        });
+
+        const deletedUser = await tx.user.update({
+            where: { id: userId },
+            data: { deleted: true }
+        });
+
+        return deletedUser;
+    });
+    return result.id;
+}
