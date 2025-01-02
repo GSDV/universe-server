@@ -19,7 +19,7 @@ Custom Status Codes (cStatus)
 - 403: User did not provide the correct password when logging in.
 - 404: User not found, cannot run a command for a nonexistent user.
 - 405: This user already exists (cannot create new user with same email).
-- 406: This account is already active (cannot send a verification email).
+- 406: User tried action on own account.
 - 410: Account has been banned and no authorizing actions are allowed.
 - 411: Account has been deleted and must be reactivated by the user before actions are allowed.
 - 413: Account is unathorized for this action.
@@ -42,6 +42,11 @@ Custom Status Codes (cStatus)
 6XX: Relating to Posts
 - 500: Unknown error with posts.
 - 504: Could not find post.
+
+
+
+8XX: Relating to Server
+- 800: Unknown server error.
 
 
 
