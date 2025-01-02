@@ -4,6 +4,7 @@ import { prisma } from '@util/prisma/client';
 import { Prisma } from '@prisma/client';
 
 import { COUNT_REPLIES, getUserLike, INCLUDE_AUTHOR, POST_PER_SCROLL } from '@util/global-server';
+import { Post, PostWithThread } from '@util/types';
 
 
 
@@ -31,16 +32,36 @@ interface ReplyDataInput {
     content: string;
     media: string[];
 }
-export const createReply = async (authorId: string, postData: ReplyDataInput) => {
-    const postPrisma = await prisma.post.create({
-        data: {
-            authorId: authorId,
-            hasLocation: false,
-            ...postData
-        },
-        include: INCLUDE_AUTHOR
+export const createReply = async (authorId: string, replyData: ReplyDataInput, parentPost: PostWithThread) => {
+    const { id: replyToId, threadPosts } = parentPost;
+
+    const res = await prisma.$transaction(async (tx) => {
+        const replyPost = await tx.post.create({
+            data: {
+                content: replyData.content,
+                media: replyData.media || [],
+                hasLocation: false,
+                authorId,
+                replyToId,
+                threadPosts: {
+                    connect: [
+                        ...threadPosts.map(post => ({ id: post.id })),
+                        { id: replyToId }
+                    ]
+                }
+            },
+            include: INCLUDE_AUTHOR
+        });
+
+        await tx.post.update({
+            where: { id: replyToId },
+            data: { replyCount: { increment: 1 } }
+        });
+
+        return replyPost;
     });
-    return postPrisma;
+
+    return res;
 }
 
 
@@ -64,6 +85,51 @@ export const getPostWithAncestors = async (where: Prisma.PostWhereUniqueInput) =
         }
     });
     return post;
+}
+
+export const getPostWithAncestorsClient = async (where: Prisma.PostWhereUniqueInput, loggedInUserId: string) => {
+    const post = await prisma.post.findUnique({
+        where,
+        include: {
+            ...INCLUDE_AUTHOR,
+            likes: getUserLike(loggedInUserId),
+            threadPosts: {
+                orderBy: { displayDate: 'asc' },
+                include: { ...INCLUDE_AUTHOR, likes: getUserLike(loggedInUserId) },
+            }
+        }
+    });
+
+    if (!post) return null;
+
+    post.threadPosts = post.threadPosts.map(p => ({
+        ...p,
+        isLiked: p.likes.length > 0,
+    }));
+    return post;
+}
+
+
+
+export const getRepliesClient = async (replyToId: string, pageNumber: number, loggedInUserId: string) => {
+    const replies = await prisma.post.findMany({
+        where: { replyToId },
+        include: {
+            ...INCLUDE_AUTHOR,
+            likes: getUserLike(loggedInUserId),
+        },
+        skip: POST_PER_SCROLL*(pageNumber-1),
+        take: POST_PER_SCROLL + 1
+    });
+
+    const clientReplies = replies.map(p => ({
+        ...p,
+        isLiked: p.likes.length > 0
+    }));
+
+    const moreRepliesAvailable = clientReplies.length > POST_PER_SCROLL;
+    if (moreRepliesAvailable) clientReplies.pop();
+    return { replies: clientReplies, moreRepliesAvailable };
 }
 
 
@@ -102,34 +168,49 @@ export const markPostDelete = async (postId: string, authorId: string) => {
 
 
 export const likePost = async (postId: string, userId: string) => {
-    await prisma.$transaction([
-        prisma.like.create({
-            data: {
-                userId,
-                postId
-            }
-        }),
-        prisma.post.update({
+    await prisma.$transaction(async (tx) => {
+        const post = await tx.post.findUnique({
+            where: { id: postId },
+            select: { deleted: true }
+        });
+
+        if (!post || post.deleted) return null;
+
+        const like = await tx.like.create({
+            data: { userId, postId }
+        });
+
+        await tx.post.update({
             where: { id: postId },
             data: { likeCount: { increment: 1 } }
-        })
-    ]);
+        });
+
+        return like;
+    });
 }
+
 export const unlikePost = async (postId: string, userId: string) => {
-    await prisma.$transaction([
-        prisma.like.delete({
+    await prisma.$transaction(async (tx) => {
+        const post = await tx.post.findUnique({
+            where: { id: postId },
+            select: { deleted: true }
+        });
+
+        if (!post || post.deleted) return null;
+
+        const like = await tx.like.delete({
             where: {
-                userId_postId: {
-                    userId,
-                    postId
-                }
+                userId_postId: { userId, postId }
             }
-        }),
-        prisma.post.update({
+        });
+
+        await tx.post.update({
             where: { id: postId },
             data: { likeCount: { decrement: 1 } }
-        })
-    ]);
+        });
+
+        return like;
+    });
 }
 
 

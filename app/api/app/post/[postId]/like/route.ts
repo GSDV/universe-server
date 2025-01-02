@@ -15,13 +15,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pos
 
         if (liked == undefined) return response(`Data not provided.`, 101);
 
-        const resValidUser = await getValidatedUser();
-        if (!resValidUser.user) return resValidUser.res;
-        const userPrisma = resValidUser.user;
+        const { userPrisma, validUserResp } = await getValidatedUser();
+        if (!userPrisma) return validUserResp;
 
         // Note: we do NOT need to check if the post actually exists.
         // Prisma transactions (used in likePost and unlikePost) are atomic.
-
         if (liked) likePost(postId, userPrisma.id);
         else unlikePost(postId, userPrisma.id);
 
