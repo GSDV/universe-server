@@ -66,16 +66,6 @@ export const createReply = async (authorId: string, replyData: ReplyDataInput, p
 
 
 
-export const getPost = async (where: Prisma.PostWhereUniqueInput) => {
-    const post = await prisma.post.findUnique({
-        where,
-        include: INCLUDE_AUTHOR
-    });
-    return post;
-}
-
-
-
 export const getPostWithAncestors = async (where: Prisma.PostWhereUniqueInput) => {
     const post = await prisma.post.findUnique({
         where,
