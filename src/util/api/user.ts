@@ -50,6 +50,7 @@ export const redactUserPrisma = (user: any): RedactedUserWithUni => {
         displayName: user.displayName,
         username: user.username,
         pfpKey: user.pfpKey,
+        bio: user.bio,
         universityId: user.universityId,
         university: user.university,
         verified: user.verified,
