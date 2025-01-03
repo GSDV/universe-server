@@ -290,6 +290,6 @@ export const searchPosts = async (query: string, cursor: Date, loggedInUserId: s
     const moreAvailable = clientPosts.length > POST_PER_SCROLL;
     if (moreAvailable) clientPosts.pop();
 
-    const newCursor = (clientPosts.length == 0) ? cursor : clientPosts[clientPosts.length-1].displayDate;
+    const newCursor = (clientPosts.length == 0) ? cursor.toISOString() : clientPosts[clientPosts.length-1].displayDate.toISOString();
     return { posts: clientPosts, newCursor, moreAvailable };
 }
