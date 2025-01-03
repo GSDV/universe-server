@@ -11,6 +11,8 @@ export const ACTIVATE_TOKEN_EXPIRATION = 60;
 
 
 
+export const PROFILE_PER_SCROLL = 15;
+
 export const POST_PER_SCROLL = 15;
 
 
