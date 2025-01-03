@@ -7,7 +7,7 @@ import { cookies } from 'next/headers';
 import { Prisma } from '@prisma/client';
 
 import { AUTH_TOKEN_COOKIE_KEY } from '@util/global';
-import { OMIT_USER, response } from '@util/global-server';
+import { getUserFollow, OMIT_USER, PROFILE_PER_SCROLL, response } from '@util/global-server';
 
 import { isValidUser, makePasswordHash, redactUserPrisma } from '@util/api/user';
 
@@ -63,8 +63,33 @@ export const getUser = async (where: Prisma.UserWhereInput) => {
 
 
 export const getUserWithUni = async (where: Prisma.UserWhereInput) => {
-    const userPrisma = await prisma.user.findFirst({ where, include: { university: true } });
+    const userPrisma = await prisma.user.findFirst({
+        where,
+        include: {
+            university: true
+        }
+    });
     return userPrisma;
+}
+
+
+
+export const getUserWithUniAndFollows = async (where: Prisma.UserWhereInput, loggedInUserId: string) => {
+    const userPrisma = await prisma.user.findFirst({
+        where,
+        include: {
+            university: true,
+            followers: getUserFollow(loggedInUserId)
+        }
+    });
+    if (!userPrisma) return null;
+
+    const clientUserPrisma = {
+        ...userPrisma,
+        isFollowed: userPrisma.followers.length > 0
+    }
+
+    return clientUserPrisma;
 }
 
 
@@ -131,6 +156,60 @@ export const getValidatedUserWithUni = async () => {
 
 
 
+export const toggleFollow = async (targetId: string, sourceId: string, followed: boolean) => {
+    await prisma.$transaction(async (tx) => {
+        if (followed) {
+            await tx.follow.upsert({
+                where: {
+                    followerId_followingId: {
+                        followerId: sourceId,
+                        followingId: targetId
+                    }
+                },
+                create: {
+                    followerId: sourceId,
+                    followingId: targetId
+                },
+                update: {}
+            });
+
+            await tx.user.update({
+                where: { id: targetId },
+                data: { followerCount: { increment: 1 } }
+            });
+
+            await tx.user.update({
+                where: { id: sourceId },
+                data: { followingCount: { increment: 1 } }
+            });
+        } else {
+            const followRecord = await tx.follow.delete({
+                where: {
+                    followerId_followingId: {
+                        followerId: sourceId,
+                        followingId: targetId
+                    }
+                }
+            }).catch(() => null);
+
+            if (followRecord) {
+                await tx.user.update({
+                    where: { id: targetId },
+                    data: { followerCount: { decrement: 1 } }
+                });
+
+                await tx.user.update({
+                    where: { id: sourceId },
+                    data: { followingCount: { decrement: 1 } }
+                });
+            }
+        }
+    });
+
+}
+
+
+
 // Mark user and all posts as delete.
 export const markUserDelete = async (userId: string) => {
     const result = await prisma.$transaction(async (tx) => {
@@ -147,4 +226,35 @@ export const markUserDelete = async (userId: string) => {
         return deletedUser;
     });
     return result.id;
+}
+
+
+
+export const searchUsers = async (query: string, cursor: Date, loggedInUserId: string) => {
+    const users = await prisma.user.findMany({
+        where: {
+            banned: false,
+            deleted: false,
+            OR: [
+                { displayName: { contains: query, mode: 'insensitive' } },
+                { username: { contains: query, mode: 'insensitive' } }
+            ],
+            createdAt: { lte: cursor }
+        },
+        orderBy: { createdAt: 'desc' },
+        include: { university: true, followers: getUserFollow(loggedInUserId) },
+        take: PROFILE_PER_SCROLL + 1
+    });
+
+    const clientUsers = users.map(u => ({
+        ...redactUserPrisma(u),
+        createdAt: u.createdAt,
+        isFollowed: u.followers.length > 0
+    }));
+
+    const moreAvailable = clientUsers.length > PROFILE_PER_SCROLL;
+    if (moreAvailable) clientUsers.pop();
+
+    const newCursor = (clientUsers.length == 0) ? cursor.toISOString() : clientUsers[clientUsers.length-1].createdAt.toISOString();
+    return { users: clientUsers, newCursor, moreAvailable };
 }
