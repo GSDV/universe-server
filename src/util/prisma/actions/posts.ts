@@ -262,3 +262,34 @@ export const fetchAccountReplies = async (authorId: string, pageNumber: number, 
     if (moreRepliesAvailable) clientReplies.pop();
     return { replies: clientReplies, moreRepliesAvailable };
 }
+
+
+
+export const searchPosts = async (query: string, cursor: Date, loggedInUserId: string) => {
+    const posts = await prisma.post.findMany({
+        where: {
+            replyToId: null,
+            deleted: false,
+            content: {
+                contains: query,
+                mode: 'insensitive'
+            },
+            displayDate: { lte: cursor }
+        },
+        orderBy: { displayDate: 'desc' },
+        include: { ...INCLUDE_AUTHOR, likes: getUserLike(loggedInUserId), ...COUNT_REPLIES },
+        take: POST_PER_SCROLL + 1
+    });
+
+    const clientPosts = posts.map(p => ({
+            ...p,
+            isLiked: p.likes.length > 0,
+            replyCount: p._count.replies
+    }));
+
+    const moreAvailable = clientPosts.length > POST_PER_SCROLL;
+    if (moreAvailable) clientPosts.pop();
+
+    const newCursor = (clientPosts.length == 0) ? cursor : clientPosts[clientPosts.length-1].displayDate;
+    return { posts: clientPosts, newCursor, moreAvailable };
+}
