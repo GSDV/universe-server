@@ -31,6 +31,8 @@ export const MIN_DISPLAY_NAME_LENGTH = 1;
 export const MAX_DISPLAY_NAME_LENGTH = 30;
 export const isValidDisplayName = (input: string) => (input.length > 0 && input.length <= 30);
 
+export const MAX_BIO_LENGTH = 150;
+
 
 
 // POST RESTRICTIONS
