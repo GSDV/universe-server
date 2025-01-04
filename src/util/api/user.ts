@@ -1,24 +1,51 @@
 import bcrypt from 'bcryptjs';
 
-import { AUTH_TOKEN_COOKIE_KEY, CONTACT_EMAIL } from '@util/global';
+import {
+    MIN_USERNAME_LENGTH,
+    MAX_USERNAME_LENGTH,
+    MIN_DISPLAY_NAME_LENGTH,
+    MAX_DISPLAY_NAME_LENGTH,
+    MAX_BIO_LENGTH
+} from '@util/global';
 import { response } from '@util/global-server';
-import { RedactedUser, RedactedUserWithUni, User } from '@util/types';
+import { RedactedUserWithUni, User } from '@util/types';
 
 
 
 export const allFieldsPresent = (formData: any) => {
-    return formData.displayName!=null && formData.displayName!='' && formData.email!=null && formData.email!='' && formData.password!=null && formData.password!='';
+    return (
+        formData.displayName!=null && 
+        formData.displayName!='' && 
+        formData.email!=null && 
+        formData.email!='' && 
+        formData.password!=null && 
+        formData.password!=''
+    );
 }
 
 
 export const isValidUsername = (input: string) => {
     const pattern = /^[a-z][a-z0-9_]+$/;
-    return input.length > 3 && input.length <= 20 && input[0] != '.' && input[input.length-1] != '.' && pattern.test(input);
+    return (
+        input.length >= MIN_USERNAME_LENGTH && 
+        input.length <= MAX_USERNAME_LENGTH && 
+        input[0] != '.' && 
+        input[input.length-1] != '.' && 
+        pattern.test(input)
+    );
 }
 
 
 export const isValidDisplayName = (input: string) => {
-    return input.length > 0 && input.length <= 30;
+    return (
+        input.length >= MIN_DISPLAY_NAME_LENGTH && 
+        input.length <= MAX_DISPLAY_NAME_LENGTH
+    );
+}
+
+
+export const isValidBio = (input: string) => {
+    return input.length <= MAX_BIO_LENGTH;
 }
 
 
