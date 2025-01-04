@@ -2,10 +2,10 @@ import { NextRequest } from 'next/server';
 
 import { getValidatedUserWithUni, updateUser } from '@util/prisma/actions/user';
 
-import { userPfpKey } from '@util/global';
+import { avatarKeyPrefix } from '@util/global';
 import { response } from '@util/global-server';
 
-import { isValidDisplayName, isValidUsername, redactUserPrisma } from '@util/api/user';
+import { isValidBio, isValidDisplayName, isValidUsername, redactUserPrisma } from '@util/api/user';
 
 
 
@@ -15,8 +15,7 @@ export async function POST(req: NextRequest) {
     try {
         const { data } = await req.json();
         if (!data) return response(`No data provided.`, 101);
-        let { displayName, username, pfpKey } = data;
-        console.log(data)
+        let { pfpKey, displayName, username, bio } = data;
 
         const { userPrisma, validUserResp } = await getValidatedUserWithUni();
         if (!userPrisma) return validUserResp;
@@ -34,8 +33,14 @@ export async function POST(req: NextRequest) {
         }
 
         if (typeof pfpKey == 'string') {
-            if (pfpKey !== userPfpKey(userPrisma.id)) return response(`Logged in account differs from upload.`, 102);
-            else newData.username = username;
+            const avatarPrefix = avatarKeyPrefix(userPrisma.id);
+            if (!pfpKey.startsWith(avatarPrefix)) return response(`Logged in account differs from upload.`, 102);
+            else newData.pfpKey = pfpKey;
+        }
+
+        if (typeof bio == 'string') {
+            if (!isValidBio(bio)) return response(`Bios must be under 150 characters`, 102);
+            else newData.bio = bio.trim().replace('\n', '');
         }
 
         const newUserPrisma = await updateUser({ id: userPrisma.id }, newData);
@@ -46,4 +51,3 @@ export async function POST(req: NextRequest) {
         return response(`Server error: ${err}`, 903);
     }
 }
-

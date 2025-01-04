@@ -1,13 +1,7 @@
 import bcrypt from 'bcryptjs';
 
-import {
-    MIN_USERNAME_LENGTH,
-    MAX_USERNAME_LENGTH,
-    MIN_DISPLAY_NAME_LENGTH,
-    MAX_DISPLAY_NAME_LENGTH,
-    MAX_BIO_LENGTH
-} from '@util/global';
 import { response } from '@util/global-server';
+
 import { RedactedUserWithUni, User } from '@util/types';
 
 
@@ -23,30 +17,6 @@ export const allFieldsPresent = (formData: any) => {
     );
 }
 
-
-export const isValidUsername = (input: string) => {
-    const pattern = /^[a-z][a-z0-9_]+$/;
-    return (
-        input.length >= MIN_USERNAME_LENGTH && 
-        input.length <= MAX_USERNAME_LENGTH && 
-        input[0] != '.' && 
-        input[input.length-1] != '.' && 
-        pattern.test(input)
-    );
-}
-
-
-export const isValidDisplayName = (input: string) => {
-    return (
-        input.length >= MIN_DISPLAY_NAME_LENGTH && 
-        input.length <= MAX_DISPLAY_NAME_LENGTH
-    );
-}
-
-
-export const isValidBio = (input: string) => {
-    return input.length <= MAX_BIO_LENGTH;
-}
 
 
 export const isValidEmail = (input: string) => {

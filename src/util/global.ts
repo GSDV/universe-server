@@ -24,14 +24,26 @@ export const MIN_USERNAME_LENGTH = 4;
 export const MAX_USERNAME_LENGTH = 25;
 export const isValidUsername = (input: string) => {
     const pattern = /^[a-z][a-z0-9_]+$/;
-    return input.length > 3 && input.length <= 20 && input[0] != '.' && input[input.length-1] != '.' && pattern.test(input);
+    return (
+        input.length >= MIN_USERNAME_LENGTH && 
+        input.length <= MAX_USERNAME_LENGTH && 
+        input[0] != '.' && 
+        input[input.length-1] != '.' && 
+        pattern.test(input)
+    );
 }
 
 export const MIN_DISPLAY_NAME_LENGTH = 1;
 export const MAX_DISPLAY_NAME_LENGTH = 30;
-export const isValidDisplayName = (input: string) => (input.length > 0 && input.length <= 30);
+export const isValidDisplayName = (input: string) => (
+    input.length >= MIN_DISPLAY_NAME_LENGTH && 
+    input.length <= MAX_DISPLAY_NAME_LENGTH
+);
 
 export const MAX_BIO_LENGTH = 150;
+export const isValidBio = (input: string) => (
+    input.length <= MAX_BIO_LENGTH
+);
 
 
 
