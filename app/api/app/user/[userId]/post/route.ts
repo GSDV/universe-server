@@ -30,7 +30,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
         const { posts, newCursor, moreAvailable} = await fetchRootPosts(authorId, cursor, loggedInUserId);
 
-        // If first page, also get the pinned post.
         let pinnedPost = null;
         if (getPinned) pinnedPost = await fetchPinnedPost(authorId, loggedInUserId);
 
