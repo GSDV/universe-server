@@ -206,12 +206,17 @@ export const unlikePost = async (postId: string, userId: string) => {
 
 
 // Will only fetch non-pinned, root posts.
-export const fetchRootPosts = async (authorId: string, pageNumber: number, loggedInUserId: string) => {
+export const fetchRootPosts = async (authorId: string, cursor: Date, loggedInUserId: string) => {
     const posts = await prisma.post.findMany({
-        where: { authorId, pinned: false, replyToId: null, deleted: false },
+        where: { 
+            authorId,
+            pinned: false,
+            replyToId: null,
+            deleted: false,
+            displayDate: { lte: cursor }
+        },
         orderBy: { displayDate: 'desc' },
         include: { ...INCLUDE_AUTHOR, likes: getUserLike(loggedInUserId), ...COUNT_REPLIES },
-        skip: POST_PER_SCROLL*(pageNumber-1),
         take: POST_PER_SCROLL + 1 // Fetch one more to see if there are more posts available
     });
 
@@ -221,9 +226,11 @@ export const fetchRootPosts = async (authorId: string, pageNumber: number, logge
             replyCount: p._count.replies
     }));
 
-    const morePostsAvailable = clientPosts.length > POST_PER_SCROLL;
-    if (morePostsAvailable) clientPosts.pop();
-    return { posts: clientPosts, morePostsAvailable };
+    const moreAvailable = clientPosts.length > POST_PER_SCROLL;
+    if (moreAvailable) clientPosts.pop();
+
+    const newCursor = (clientPosts.length == 0) ? cursor.toISOString() : clientPosts[clientPosts.length-1].displayDate.toISOString();
+    return { posts: clientPosts, newCursor, moreAvailable };
 }
 
 // Only fetch a user's pinned post
@@ -243,12 +250,17 @@ export const fetchPinnedPost = async (authorId: string, loggedInUserId: string) 
     return clientPinnedPost;
 }
 
-export const fetchAccountReplies = async (authorId: string, pageNumber: number, loggedInUserId: string) => {
+export const fetchAccountReplies = async (authorId: string, cursor: Date, loggedInUserId: string) => {
     const replies = await prisma.post.findMany({
-        where: { authorId, pinned: false, replyToId: {not: null}, deleted: false },
+        where: {
+            authorId,
+            pinned: false,
+            replyToId: {not: null},
+            deleted: false,
+            displayDate: { lte: cursor }
+        },
         orderBy: { displayDate: 'desc' },
         include: { ...INCLUDE_AUTHOR, likes: getUserLike(loggedInUserId), ...COUNT_REPLIES },
-        skip: POST_PER_SCROLL*(pageNumber-1),
         take: POST_PER_SCROLL + 1
     });
 
@@ -258,9 +270,11 @@ export const fetchAccountReplies = async (authorId: string, pageNumber: number, 
             replyCount: r._count.replies
     }));
 
-    const moreRepliesAvailable = clientReplies.length > POST_PER_SCROLL;
-    if (moreRepliesAvailable) clientReplies.pop();
-    return { replies: clientReplies, moreRepliesAvailable };
+    const moreAvailable = clientReplies.length > POST_PER_SCROLL;
+    if (moreAvailable) clientReplies.pop();
+
+    const newCursor = (clientReplies.length == 0) ? cursor.toISOString() : clientReplies[clientReplies.length-1].displayDate.toISOString();
+    return { replies: clientReplies, newCursor, moreAvailable };
 }
 
 
