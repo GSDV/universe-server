@@ -28,6 +28,6 @@ export async function POST(req: NextRequest) {
 
         return response(`Success`, 200, { signedUrl, key });
     } catch (err) {
-        return response(`Server error: ${err}`, 900);
+        return response(`Server error.`, 900);
     }
 }

@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
         return response(`Check your email to activate your account.`, 200);
     } catch (err: any) {
-        return response(`Server error: ${err}`, 903);
+        return response(`Server error.`, 903);
     }
 }
 
@@ -84,12 +84,12 @@ export async function PUT(req: NextRequest) {
             return response(`Wrong activation code.`, 501);
         }
 
-        const userId = await createUser(displayName, username, email, password);
-        const authToken = await createAuthToken(userId);
+        const user = await createUser(displayName, username, email, password);
+        const authToken = await createAuthToken(user.id);
 
         waitUntil(deleteActivateTokens({ email }));
-        return response(`Success! Your account has been activated.`, 200, { userId, authToken });
+        return response(`Success! Your account has been activated.`, 200, { user, authToken });
     } catch (err: any) {
-        return response(`Server error: ${err}`, 903);
+        return response(`Server error.`, 903);
     }
 }

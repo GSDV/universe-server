@@ -15,9 +15,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ p
 
         const postId = (await params).postId;
 
-        const resValidUser = await getValidatedUser();
-        if (!resValidUser.user) return resValidUser.resp;
-        const userPrisma = resValidUser.user;
+        const { userPrisma, validUserResp } = await getValidatedUser();
+        if (!userPrisma) return validUserResp;
 
         asyncTasks.push(markPostDelete(postId, userPrisma.id));
 
@@ -25,6 +24,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ p
 
         return response(`Success`, 200);
     } catch (err) {
-        return response(`Server error: ${err}`, 904);
+        return response(`Server error.`, 904);
     }
 }

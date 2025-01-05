@@ -29,6 +29,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
         return response(`Success`, 200, { user: clientUserPrisma, ownAccount });
     } catch (err) {
-        return response(`Server error: ${err}`, 904);
+        return response(`Server error.`, 904);
     }
 }

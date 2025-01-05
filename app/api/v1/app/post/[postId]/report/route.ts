@@ -20,9 +20,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pos
         if (report.length == 0) return response(`Report text is empty.`, 102);
         if (report.length > MAX_REPORT_LENGTH) return response(`Report text is too long.`, 102);
 
-        const resValidUser = await getValidatedUser();
-        if (!resValidUser.user) return resValidUser.resp;
-        const userPrisma = resValidUser.user;
+        
+        const { userPrisma, validUserResp } = await getValidatedUser();
+        if (!userPrisma) return validUserResp;
 
         const reportPrisma = await getReport(userPrisma.id, postId);
         // If it is not null, the user already reported the post.
@@ -32,6 +32,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pos
 
         return response(`Success`, 200);
     } catch (err) {
-        return response(`Server error: ${err}`, 900);
+        return response(`Server error.`, 900);
     }
 }

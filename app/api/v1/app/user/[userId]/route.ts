@@ -21,6 +21,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ u
 
         return response(`Success.`, 200);
     } catch (err: any) {
-        return response(`Server error: ${err}`, 903);
+        return response(`Server error.`, 903);
     }
 }

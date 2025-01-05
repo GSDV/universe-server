@@ -25,6 +25,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pos
 
         return response(`Success`, 200);
     } catch (err) {
-        return response(`Server error: ${err}`, 904);
+        return response(`Server error.`, 904);
     }
 }
