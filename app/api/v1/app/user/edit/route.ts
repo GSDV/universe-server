@@ -38,7 +38,6 @@ export async function POST(req: NextRequest) {
         }
 
         if (typeof bio == 'string') {
-            console.log(bio)
             if (!isValidBio(bio)) return response(`Bios must be under 150 characters`, 102);
             else newData.bio = bio.replace(/[\r\n]+/g, ' ').trim();
         }
