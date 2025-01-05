@@ -1,7 +1,9 @@
 import { NextRequest } from 'next/server';
 
+import { Prisma } from '@prisma/client';
+
 import { getValidatedUser } from '@util/prisma/actions/user';
-import { fetchAccountReplies } from '@util/prisma/actions/posts';
+import { fetchClientBatchPosts } from '@util/prisma/actions/posts';
 
 import { response } from '@util/global-server';
 
@@ -12,22 +14,25 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     try {
         const { searchParams } = new URL(req.url);
 
-        const cursorParam = searchParams.get('cursor');
+        const cursor = searchParams.get('cursor');
 
         const authorId = (await params).userId;
-        if (!authorId || !cursorParam) return response(`Missing data.`, 101);
-
-        const cursor = new Date(cursorParam);
-        if (isNaN(cursor.getTime())) return response(`Date not valid.`, 102);
-        
+        if (!authorId || cursor == null) return response(`Missing data.`, 101);
 
         const { userPrisma, validUserResp } = await getValidatedUser();
         if (!userPrisma) return validUserResp;
         const loggedInUserId = userPrisma.id;
 
-        const { replies, newCursor, moreAvailable} = await fetchAccountReplies(authorId, cursor, loggedInUserId);
+        // Will only fetch non-pinned, root posts.
+        const where: Prisma.PostWhereInput = {
+            authorId,
+            pinned: false,
+            replyToId: { not: null },
+            deleted: false
+        };
+        const { clientPosts, nextCursor, moreAvailable} = await fetchClientBatchPosts(where, cursor, loggedInUserId);
 
-        return response(`Success.`, 200, { replies, newCursor, moreAvailable });
+        return response(`Success.`, 200, { replies: clientPosts, nextCursor, moreAvailable });
     } catch (err) {
         return response(`Server error.`, 904);
     }

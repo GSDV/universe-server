@@ -1,7 +1,9 @@
 import { NextRequest } from 'next/server';
 
+import { Prisma } from '@prisma/client';
+
 import { getValidatedUser } from '@util/prisma/actions/user';
-import { fetchPinnedPost, fetchRootPosts } from '@util/prisma/actions/posts';
+import { fetchPinnedPost, fetchClientBatchPosts } from '@util/prisma/actions/posts';
 
 import { response } from '@util/global-server';
 
@@ -12,29 +14,32 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     try {
         const { searchParams } = new URL(req.url);
 
-        const cursorParam = searchParams.get('cursor');
+        const cursor = searchParams.get('cursor');
         const getPinnedParam = searchParams.get('getPinned');
 
         const authorId = (await params).userId;
-        if (!authorId || !cursorParam) return response(`Missing data.`, 101);
-
-        const cursor = new Date(cursorParam);
-        if (isNaN(cursor.getTime())) return response(`Date not valid.`, 102);
+        if (!authorId || cursor == null) return response(`Missing data.`, 101);
 
         const getPinned = getPinnedParam === 'true';
-
 
         const { userPrisma, validUserResp } = await getValidatedUser();
         if (!userPrisma) return validUserResp;
         const loggedInUserId = userPrisma.id;
 
-        const { posts, newCursor, moreAvailable} = await fetchRootPosts(authorId, cursor, loggedInUserId);
+        // Will only fetch non-pinned, root posts.
+        const where: Prisma.PostWhereInput = {
+            authorId,
+            pinned: false,
+            replyToId: null,
+            deleted: false
+        };
+        const { clientPosts, nextCursor, moreAvailable} = await fetchClientBatchPosts(where, cursor, loggedInUserId);
 
         let pinnedPost = null;
         if (getPinned) pinnedPost = await fetchPinnedPost(authorId, loggedInUserId);
 
-        if (pinnedPost) return response(`Success.`, 200, { posts: [pinnedPost, ...posts], newCursor, moreAvailable });
-        return response(`Success.`, 200, { posts, newCursor, moreAvailable });
+        if (pinnedPost) return response(`Success.`, 200, { posts: [pinnedPost, ...clientPosts], nextCursor, moreAvailable });
+        return response(`Success.`, 200, { posts: clientPosts, nextCursor, moreAvailable });
     } catch (err) {
         return response(`Server error.`, 904);
     }
