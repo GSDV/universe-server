@@ -26,6 +26,6 @@ export async function GET(req: NextRequest) {
 
         return response(`Success.`, 200, { users, newCursor, moreAvailable });
     } catch (err) {
-        return response(`Server error: ${err}`, 904);
+        return response(`Server error.`, 904);
     }
 }

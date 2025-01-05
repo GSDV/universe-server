@@ -27,6 +27,6 @@ export async function GET(req: NextRequest) {
 
         return response(`Success.`, 200, { posts, newCursor, moreAvailable });
     } catch (err) {
-        return response(`Server error: ${err}`, 904);
+        return response(`Server error.`, 904);
     }
 }
