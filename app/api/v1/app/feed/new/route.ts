@@ -9,7 +9,7 @@ import { response } from '@util/global-server';
 
 
 
-// Used for fetching hot/trending posts to display on the feed screen.
+// Used for fetching new posts to display on the feed screen.
 export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
@@ -20,17 +20,13 @@ export async function GET(req: NextRequest) {
         if (!userPrisma) return validUserResp;
         const loggedInUserId = userPrisma.id;
 
-        // Posts need to be less than 1 day old in order to be considered trending.
-        const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
         const where: Prisma.PostWhereInput = {
             deleted: false,
-            replyToId: null,
-            displayDate: { gte: cutoff },
+            replyToId: null
         };
         const orderBy: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> = [
-            { likeCount: 'desc' },
             { displayDate: 'desc' },
+            { likeCount: 'desc' },
             { replyCount: 'desc' }
         ];
         const { clientPosts, nextCursor, moreAvailable} = await fetchClientBatchPosts(where, cursor, loggedInUserId, orderBy);
