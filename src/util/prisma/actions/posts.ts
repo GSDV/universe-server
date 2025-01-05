@@ -5,6 +5,7 @@ import { Prisma } from '@prisma/client';
 
 import { COUNT_REPLIES, getUserLike, INCLUDE_AUTHOR, POST_PER_SCROLL } from '@util/global-server';
 import { Post, PostWithThread } from '@util/types';
+import { makeClientPosts } from '@util/api/posts';
 
 
 
@@ -205,34 +206,6 @@ export const unlikePost = async (postId: string, userId: string) => {
 
 
 
-// Will only fetch non-pinned, root posts.
-export const fetchRootPosts = async (authorId: string, cursor: Date, loggedInUserId: string) => {
-    const posts = await prisma.post.findMany({
-        where: { 
-            authorId,
-            pinned: false,
-            replyToId: null,
-            deleted: false,
-            displayDate: { lte: cursor }
-        },
-        orderBy: { displayDate: 'desc' },
-        include: { ...INCLUDE_AUTHOR, likes: getUserLike(loggedInUserId), ...COUNT_REPLIES },
-        take: POST_PER_SCROLL + 1 // Fetch one more to see if there are more posts available
-    });
-
-    const clientPosts = posts.map(p => ({
-            ...p,
-            isLiked: p.likes.length > 0, // Because we only fetch the user's like, see if the length is above 0
-            replyCount: p._count.replies
-    }));
-
-    const moreAvailable = clientPosts.length > POST_PER_SCROLL;
-    if (moreAvailable) clientPosts.pop();
-
-    const newCursor = (clientPosts.length == 0) ? cursor.toISOString() : clientPosts[clientPosts.length-1].displayDate.toISOString();
-    return { posts: clientPosts, newCursor, moreAvailable };
-}
-
 // Only fetch a user's pinned post
 export const fetchPinnedPost = async (authorId: string, loggedInUserId: string) => {
     const pinnedPost = await prisma.post.findFirst({
@@ -250,60 +223,31 @@ export const fetchPinnedPost = async (authorId: string, loggedInUserId: string) 
     return clientPinnedPost;
 }
 
-export const fetchAccountReplies = async (authorId: string, cursor: Date, loggedInUserId: string) => {
-    const replies = await prisma.post.findMany({
-        where: {
-            authorId,
-            pinned: false,
-            replyToId: {not: null},
-            deleted: false,
-            displayDate: { lte: cursor }
-        },
-        orderBy: { displayDate: 'desc' },
-        include: { ...INCLUDE_AUTHOR, likes: getUserLike(loggedInUserId), ...COUNT_REPLIES },
-        take: POST_PER_SCROLL + 1
-    });
-
-    const clientReplies = replies.map(r => ({
-            ...r,
-            isLiked: r.likes.length > 0,
-            replyCount: r._count.replies
-    }));
-
-    const moreAvailable = clientReplies.length > POST_PER_SCROLL;
-    if (moreAvailable) clientReplies.pop();
-
-    const newCursor = (clientReplies.length == 0) ? cursor.toISOString() : clientReplies[clientReplies.length-1].displayDate.toISOString();
-    return { replies: clientReplies, newCursor, moreAvailable };
-}
 
 
-
-export const searchPosts = async (query: string, cursor: Date, loggedInUserId: string) => {
+export const fetchClientBatchPosts = async (
+    where: Prisma.PostWhereInput,
+    cursor: string,
+    loggedInUserId: string,
+    orderBy: (Prisma.PostOrderByWithRelationInput | Prisma.Enumerable<Prisma.PostOrderByWithRelationInput>) = { displayDate: 'desc' }
+) => {
     const posts = await prisma.post.findMany({
-        where: {
-            replyToId: null,
-            deleted: false,
-            content: {
-                contains: query,
-                mode: 'insensitive'
-            },
-            displayDate: { lte: cursor }
-        },
-        orderBy: { displayDate: 'desc' },
-        include: { ...INCLUDE_AUTHOR, likes: getUserLike(loggedInUserId), ...COUNT_REPLIES },
-        take: POST_PER_SCROLL + 1
+        where,
+        include: { ...INCLUDE_AUTHOR, likes: getUserLike(loggedInUserId) },
+        orderBy,
+        take: POST_PER_SCROLL + 1,
+        ...(cursor && {
+            cursor: { id: cursor },
+            skip: 1,
+        })
     });
 
-    const clientPosts = posts.map(p => ({
-            ...p,
-            isLiked: p.likes.length > 0,
-            replyCount: p._count.replies
-    }));
+    const clientPosts = makeClientPosts(posts);
+
+    const nextCursor = (clientPosts.length!=0) ? clientPosts[clientPosts.length - 1].id : '';
 
     const moreAvailable = clientPosts.length > POST_PER_SCROLL;
     if (moreAvailable) clientPosts.pop();
 
-    const newCursor = (clientPosts.length == 0) ? cursor.toISOString() : clientPosts[clientPosts.length-1].displayDate.toISOString();
-    return { posts: clientPosts, newCursor, moreAvailable };
+    return { clientPosts, nextCursor, moreAvailable };
 }
