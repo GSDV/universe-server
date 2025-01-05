@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 
 import { response } from '@util/global-server';
 
-import { RedactedUserWithUni, User } from '@util/types';
+import { REDACT_USER_OMITS_TYPE, RedactedUserWithUni, User, UserWithUni } from '@util/types';
 
 
 
@@ -68,4 +68,20 @@ export const makePasswordHash = async (input: string) => {
 export const hashPassword = async (input: string, salt: string) => {
     const hashedPassword = await bcrypt.hash(input, salt);
     return hashedPassword;
+}
+
+
+
+interface RetrievedUser extends UserWithUni {
+    followers: { id: string }[];
+}
+interface ClientUser extends Omit<User, keyof REDACT_USER_OMITS_TYPE> {
+    isFollowed: boolean;
+}
+export const makeClientUsers = (users: RetrievedUser[]) => {
+    const clientUsers: ClientUser[] = users.map(p => ({
+        ...p,
+        isFollowed: (p.followers.length > 0)
+    }));
+    return clientUsers;
 }
