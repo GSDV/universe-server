@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
 
         const query = queryParam.trim().toLowerCase();
         const cursor = new Date(cursorParam);
+        if (isNaN(cursor.getTime())) return response(`Date not valid.`, 102);
 
         const { userPrisma, validUserResp } = await getValidatedUser();
         if (!userPrisma) return validUserResp;
