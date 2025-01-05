@@ -9,7 +9,7 @@ import { Prisma } from '@prisma/client';
 import { AUTH_TOKEN_COOKIE_KEY } from '@util/global';
 import { getUserFollow, OMIT_USER, PROFILE_PER_SCROLL, response } from '@util/global-server';
 
-import { isValidUser, makePasswordHash, redactUserPrisma } from '@util/api/user';
+import { isValidUser, makeClientUsers, makePasswordHash, redactUserPrisma } from '@util/api/user';
 
 
 
@@ -230,31 +230,24 @@ export const markUserDelete = async (userId: string) => {
 
 
 
-export const searchUsers = async (query: string, cursor: Date, loggedInUserId: string) => {
+export const fetchClientBatchUsers = async (where: Prisma.UserWhereInput, cursor: string, loggedInUserId: string) => {
     const users = await prisma.user.findMany({
-        where: {
-            banned: false,
-            deleted: false,
-            OR: [
-                { displayName: { contains: query, mode: 'insensitive' } },
-                { username: { contains: query, mode: 'insensitive' } }
-            ],
-            createdAt: { lte: cursor }
-        },
-        orderBy: { createdAt: 'desc' },
+        where,
         include: { university: true, followers: getUserFollow(loggedInUserId) },
-        take: PROFILE_PER_SCROLL + 1
+        orderBy: { createdAt: 'desc' },
+        take: PROFILE_PER_SCROLL + 1,
+        ...(cursor && {
+            cursor: { id: cursor },
+            skip: 1,
+        })
     });
 
-    const clientUsers = users.map(u => ({
-        ...redactUserPrisma(u),
-        createdAt: u.createdAt,
-        isFollowed: u.followers.length > 0
-    }));
+    const clientUsers = makeClientUsers(users);
+
+    const nextCursor = (clientUsers.length!=0) ? clientUsers[clientUsers.length - 1].id : '';
 
     const moreAvailable = clientUsers.length > PROFILE_PER_SCROLL;
     if (moreAvailable) clientUsers.pop();
 
-    const newCursor = (clientUsers.length == 0) ? cursor.toISOString() : clientUsers[clientUsers.length-1].createdAt.toISOString();
-    return { users: clientUsers, newCursor, moreAvailable };
+    return { clientUsers, nextCursor, moreAvailable };
 }
