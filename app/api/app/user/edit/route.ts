@@ -23,12 +23,12 @@ export async function POST(req: NextRequest) {
 
         if (typeof displayName == 'string') {
             if (!isValidDisplayName(displayName)) return response(`Display names must be 1-30 characters.`, 102);
-            else newData.displayName = displayName.trim().replace('\n', '');
+            else newData.displayName = displayName.replace(/[\r\n]+/g, ' ').trim();
         }
 
         if (typeof username == 'string') {
             if (!isValidUsername(username)) return response(`Usernames must be 4-20 characters, and start with a letter.`, 102);
-            else newData.username = username.trim().replace('\n', '');
+            else newData.username = username.replace(/[\r\n]+/g, ' ').trim();
         }
 
         if (typeof pfpKey == 'string') {
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
         if (typeof bio == 'string') {
             console.log(bio)
             if (!isValidBio(bio)) return response(`Bios must be under 150 characters`, 102);
-            else newData.bio = bio.trim().replace('\n', '');
+            else newData.bio = bio.replace(/[\r\n]+/g, ' ').trim();
         }
 
         const newUserPrisma = await updateUser({ id: userPrisma.id }, newData);

@@ -54,6 +54,14 @@ export const MIN_REPLY_CONTENT_LENGTH = 2;
 export const MAX_REPLY_CONTENT_LENGTH = 200;
 export const MAX_POST_MEDIA = 4;
 
+export const MIME_TYPE_MAP = new Map<string, string>([
+    ['image/jpeg', '.jpeg'],
+    ['image/jpg', '.jpg'],
+    ['image/png', '.png'],
+    ['video/mp4', '.mp4'],
+    ['image/webp', '.webp'],
+    ['video/quicktime', '.mov']
+]);
 export const ACCEPTED_IMGS = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
 export const ACCEPTED_VIDS = ['video/mp4', 'video/quicktime'];
 export const ACCEPTED_FILES = [...ACCEPTED_IMGS, ...ACCEPTED_VIDS];

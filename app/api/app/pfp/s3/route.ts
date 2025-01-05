@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
         const { userPrisma, validUserResp } = await getValidatedUser();
         if (!userPrisma) return validUserResp;
 
-        if (!ACCEPTED_IMGS.includes(fileType)) return response(`Upload only png, jpg, or webp files.`, 102);
+        if (!ACCEPTED_IMGS.includes(fileType)) return response(`Upload only png or jpg files.`, 102);
         if (fileSize > AVATAR_SIZE_LIMIT) return response(`Upload images less than ${AVATAR_SIZE_LIMIT_TXT}.`, 102);
 
         await deleteFromS3(userPrisma.pfpKey);
