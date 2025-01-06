@@ -1,14 +1,16 @@
 import { NextRequest } from 'next/server';
 
+import { cookies } from 'next/headers';
+
 import { Prisma } from '@prisma/client';
 
-import { getUserWithUniFromAuth, getValidatedUser } from '@util/prisma/actions/user';
+import { getUserWithUniFromAuth } from '@util/prisma/actions/user';
 import { fetchClientBatchPosts } from '@util/prisma/actions/posts';
 
-import { response } from '@util/global-server';
-import { isValidUser } from '@util/api/user';
 import { AUTH_TOKEN_COOKIE_KEY } from '@util/global';
-import { cookies } from 'next/headers';
+import { response } from '@util/global-server';
+
+import { isValidUser } from '@util/api/user';
 
 
 
@@ -21,7 +23,6 @@ export async function GET(req: NextRequest) {
         const cursor = searchParams.get('cursor');
         if (cursor === null) return response(`Missing data.`, 101);
 
-
         // Must manually get user schema to get email field, which is usually redacted.
         const cookieStore = await cookies();
         const authTokenCookie = cookieStore.get(AUTH_TOKEN_COOKIE_KEY);
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
         const userPrisma = await getUserWithUniFromAuth(authToken);
         const { valid, res } = isValidUser(userPrisma);
         if (!valid) return res;
-        // TypeScript:
+        // For TypeScript:
         if (!userPrisma) return response(`You are not logged in.`, 103);
         const loggedInUserId = userPrisma.id;
 
