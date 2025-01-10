@@ -1,15 +1,15 @@
-
 import { NextRequest } from 'next/server';
 
 import { waitUntil } from '@vercel/functions';
 
+import { isValidDisplayName, isValidUsername } from '@util/global';
 import { response, MAX_ACTIVATE_TOKEN_ATTEMPTS } from '@util/global-server';
 
 import { createUser, getUser } from '@util/prisma/actions/user';
 import { createActivateToken, createAuthToken, deleteActivateTokens, getActivateToken, incrementActivateTokenAttempts } from '@util/prisma/actions/tokens';
 
 import { isActivateTokenExpired } from '@util/api/tokens';
-import { isValidDisplayName, isValidEmail, isValidPassword, isValidUsername } from '@util/api/user';
+import { isValidEmail, isValidPassword } from '@util/api/user';
 
 
 
