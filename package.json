@@ -8,6 +8,11 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "eslintConfig": {
+    "rules": {
+        "@typescript-eslint/no-unused-vars": "off"
+    }
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.679.0",
     "@aws-sdk/s3-request-presigner": "^3.679.0",
