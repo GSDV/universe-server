@@ -248,6 +248,6 @@ model AdminAuthToken {
 
     token               String              @unique
 
-    userId              String
-    user                Admin                @relation("AdminAuthToken", fields: [userId], references: [id], onDelete: Cascade)
+    adminId             String
+    admin               Admin               @relation("AdminAuthToken", fields: [adminId], references: [id], onDelete: Cascade)
 }
