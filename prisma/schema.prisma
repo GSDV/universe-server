@@ -220,3 +220,34 @@ model PostReport {
     reportedPostId      String
     reportedPost        Post                @relation("ReportedPost", fields: [reportedPostId], references: [id], onDelete: Cascade)
 }
+
+
+
+
+
+// Admin schemas are not used in-app; cannot be used to login.
+model Admin {
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
+    id                  String              @id @default(cuid())
+
+    password            String
+    salt                String
+
+    email               String              @unique
+
+    authTokens          AdminAuthToken[]    @relation("AdminAuthToken")
+}
+
+
+
+model AdminAuthToken {
+    createdAt           DateTime            @default(now())
+    updatedAt           DateTime            @updatedAt
+    id                  String              @id @default(cuid())
+
+    token               String              @unique
+
+    userId              String
+    user                Admin                @relation("AdminAuthToken", fields: [userId], references: [id], onDelete: Cascade)
+}
