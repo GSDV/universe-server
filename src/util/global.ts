@@ -2,9 +2,9 @@
 
 
 
-export const DOMAIN = 'http://localhost:3005';
+export const DOMAIN = 'http://joinuniverse.app';
 export const BRAND = 'UniVerse';
-export const CONTACT_EMAIL = 'contact@universe.com';
+export const CONTACT_EMAIL = 'contact@joinuniverse.app';
 
 
 
