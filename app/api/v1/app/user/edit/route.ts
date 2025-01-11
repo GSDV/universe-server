@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         const newUserPrisma = await updateUser({ id: userPrisma.id }, newData);
 
         return response('Success', 200, { user: redactUserPrisma(newUserPrisma) });
-    } catch (_) {
+    } catch (err: any) {
         if ((err.code, err.code === 'P2002') && (err.meta?.target?.includes('username'))) return response(`This username is already taken.`, 405);
         return response(`Server error.`, 903);
     }
