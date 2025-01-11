@@ -73,3 +73,7 @@ export const response = (msg: string, cStatus: number, data?: Record<string, unk
     if (cStatus/100 == 2) return NextResponse.json({ cStatus, msg, ...(data || {}) }, { status: 200 })
     return NextResponse.json({ cStatus, msg, ...(data || {}) }, { status: 400 })
 }
+
+
+
+export const ADMIN_AUTH_TOKEN_COOKIE_KEY = 'admin_auth_token';
