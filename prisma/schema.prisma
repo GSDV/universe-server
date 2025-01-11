@@ -83,6 +83,7 @@ model Follow {
     following           User                @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
 
     @@unique([followerId, followingId])
+    @@index([followerId, followingId])
     @@index([followerId])
     @@index([followingId])
 }
