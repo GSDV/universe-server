@@ -21,7 +21,7 @@ export async function PUT(req: NextRequest) {
         if (pin) await updatePosts({ AND: [{id: postId}, {authorId: userPrisma.id}] }, { pinned: pin });
 
         return response(`Success`, 200);
-    } catch (err: any) {
+    } catch (_) {
         return response(`Server error.`, 903);
     }
 }

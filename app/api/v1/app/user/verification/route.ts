@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
         // if (sgCode!=200 && sgCode!=201 && sgCode!=204) response(`Unknown email error. Please try again.`, 801);
 
         return response(`Check your email to activate your account.`, 200);
-    } catch (err: any) {
+    } catch (_) {
         return response(`Server error.`, 903);
     }
 }
@@ -89,7 +89,7 @@ export async function PUT(req: NextRequest) {
 
         waitUntil(deleteActivateTokens({ email }));
         return response(`Success! Your account has been activated.`, 200, { user, authToken });
-    } catch (err: any) {
+    } catch (_) {
         return response(`Server error.`, 903);
     }
 }

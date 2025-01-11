@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         if (!userPrisma) return validUserResp;
 
         return response(`Success.`, 200, { user: userPrisma }); 
-    } catch (err: any) {
+    } catch (_) {
         return response(`Server error.`, 903);
     }
 }
@@ -44,7 +44,7 @@ export async function PUT(req: NextRequest) {
         const user = redactUserPrisma(userPrisma);
 
         return response(`Success.`, 200, { authToken, user });
-    } catch (err: any) {
+    } catch (_) {
         return response(`Server error.`, 903);
     }
 }

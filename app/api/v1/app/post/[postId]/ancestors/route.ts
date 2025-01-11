@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ post
         const thread = postPrisma.threadPosts;
 
         return response(`Success`, 200, { thread });
-    } catch (err: any) {
+    } catch (_) {
         return response(`Server error.`, 903);
     }
 }

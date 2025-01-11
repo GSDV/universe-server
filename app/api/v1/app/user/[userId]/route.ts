@@ -20,7 +20,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ u
         await markUserDelete(userPrisma.id);
 
         return response(`Success.`, 200);
-    } catch (err: any) {
+    } catch (_) {
         return response(`Server error.`, 903);
     }
 }

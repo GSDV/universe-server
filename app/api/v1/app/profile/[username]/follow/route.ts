@@ -33,7 +33,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ use
         await toggleFollow(targetUser.id, userPrisma.id, followed);
 
         return response(`Success`, 200);
-    } catch (err: any) {
+    } catch (_) {
         return response(`Server error.`, 903);
     }
 }

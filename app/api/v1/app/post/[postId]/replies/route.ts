@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ post
         const { replies, moreRepliesAvailable } = await getRepliesClient(postId, 1, loggedInId);
 
         return response(`Success`, 200, { replies, moreRepliesAvailable });
-    } catch (err: any) {
+    } catch (_) {
         return response(`Server error.`, 903);
     }
 }
