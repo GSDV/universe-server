@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
         const { data } = await req.json();
 
         if (!data) return response(`No data provided.`, 101);
-        let { displayName, username, email, password } = data;
+        const { displayName, username, email, password } = data;
 
         if (typeof displayName != 'string' || typeof username != 'string' || typeof email != 'string' || typeof password != 'string') return response(`Missing data fields.`, 101);
 
