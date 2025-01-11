@@ -24,6 +24,9 @@ export type RedactedUser = Prisma.UserGetPayload<{ omit: REDACT_USER_OMITS_TYPE 
 export type RedactedUserWithUni = Prisma.UserGetPayload<{ omit: REDACT_USER_OMITS_TYPE, include: {university: true} }>;
 export type RedactedUserWithPosts = Prisma.UserGetPayload<{ omit: REDACT_USER_OMITS_TYPE, include: {posts: true} }>;
 
+export type Post = Prisma.PostGetPayload<{}>;
+export type PostWithThread = Prisma.PostGetPayload<{ include: {threadPosts: true} }>;
+
 
 
 export const createPostSchema = z.object({
