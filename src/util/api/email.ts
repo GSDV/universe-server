@@ -1,6 +1,6 @@
 import sgMail from '@sendgrid/mail';
 
-import { CONTACT_EMAIL, DOMAIN, BRAND } from '@util/global';
+import { CONTACT_EMAIL, BRAND } from '@util/global';
 
 
 
@@ -21,7 +21,7 @@ export const sendActivationEmail = async (email: string, token: string) => {
     `;
     const mail = {
         email: email,
-        subject: 'Activate Your UniVerse Account',
+        subject: `Activate Your ${BRAND} Account`,
         msgText: msgText,
         msgHtml: msgHtml
     };
