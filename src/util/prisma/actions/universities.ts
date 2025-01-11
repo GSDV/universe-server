@@ -1,17 +1,9 @@
-
-
 'use server';
-
-import { prisma } from '@util/prisma/client';
-
-import { cookies } from 'next/headers';
 
 import { Prisma } from '@prisma/client';
 
-import { AUTH_TOKEN_COOKIE_KEY } from '@util/global';
-import { getUserFollow, OMIT_USER, PROFILE_PER_SCROLL, response } from '@util/global-server';
+import { prisma } from '@util/prisma/client';
 
-import { isValidUser, makeClientUsers, makePasswordHash, redactUserPrisma } from '@util/api/user';
 
 
 export const getUni = async (where: Prisma.UniversityWhereUniqueInput) => {
@@ -20,6 +12,7 @@ export const getUni = async (where: Prisma.UniversityWhereUniqueInput) => {
     });
     return uniPrisma;
 }
+
 
 
 export const createUni = async (domain: string, name: string, color: string) => {
