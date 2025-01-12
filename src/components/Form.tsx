@@ -9,14 +9,19 @@ export interface FormInputType {
 }
 
 export interface FormType {
-    action: (formData: FormData) => void,
+    action: (formData: FormData) => Promise<void>,
     inputs: FormInputType[],
     submitTitle: string
 }
 
 export default function Form({ action, inputs, submitTitle }: FormType) {
+    // Non-async handleSubmit needed for loading animations to work properly in async server action functions.
+    const handleSubmit = (formData: FormData) => {
+        action(formData);
+    }
+
     return (
-        <form className={formStyles.form} action={action}>
+        <form className={formStyles.form} action={handleSubmit}>
             {inputs.map((input, i) => { 
                 return (
                     <div key={i} className={formStyles.formItem}>
