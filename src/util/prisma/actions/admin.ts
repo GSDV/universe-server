@@ -14,17 +14,17 @@ import { ADMIN_AUTH_TOKEN_COOKIE_KEY } from '@util/global-server';
 
 export const createAdminAuthToken = async (adminId: string) => {
     const token = uuidv4();
-    await prisma.authToken.create({
+    await prisma.adminAuthToken.create({
         data: {
             token: token,
-            user: { connect: { id: adminId } }
+            admin: { connect: { id: adminId } }
         }
     });
     return token;
 }
 
 export const deleteAdminAuthToken = async (authToken: string) => {
-    await prisma.authToken.delete({
+    await prisma.adminAuthToken.delete({
         where: { token: authToken }
     });
 }
