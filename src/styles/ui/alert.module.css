@@ -1,0 +1,19 @@
+.msg {
+    padding: 10px;
+    width: fit-content;
+    max-width: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.error {
+    border: 3px solid #c44d4d;
+    background-color: #ff9c9c;
+}
+.success {
+    border: 3px solid #3ca93b;
+    background-color: #82e682;
+}
