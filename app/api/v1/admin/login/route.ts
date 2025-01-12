@@ -10,6 +10,20 @@ import { hashPassword } from '@util/api/user';
 
 
 
+// See if admin is logged in.
+export async function GET(req: NextRequest) {
+    try {
+        const adminPrisma = await getValidatedAdmin();
+        if (!adminPrisma) return response(`Not logged in.`, 100);
+
+        return response(`Success.`, 200); 
+    } catch (_) {
+        return response(`Server error.`, 903);
+    }
+}
+
+
+
 // Login admin.
 export async function PUT(req: NextRequest) {
     try {
@@ -31,20 +45,6 @@ export async function PUT(req: NextRequest) {
         cookieStore.set(ADMIN_AUTH_TOKEN_COOKIE_KEY, authToken);
 
         return response(`Success.`, 200);
-    } catch (_) {
-        return response(`Server error.`, 903);
-    }
-}
-
-
-
-// See if admin is logged in.
-export async function GET(req: NextRequest) {
-    try {
-        const adminPrisma = await getValidatedAdmin();
-        if (!adminPrisma) return response(`Not logged in.`, 100);
-
-        return response(`Success.`, 200); 
     } catch (_) {
         return response(`Server error.`, 903);
     }
