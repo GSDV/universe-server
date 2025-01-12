@@ -16,12 +16,14 @@ export interface FormType {
 
 export default function Form({ action, inputs, submitTitle }: FormType) {
     // Non-async handleSubmit needed for loading animations to work properly in async server action functions.
-    const handleSubmit = (formData: FormData) => {
-        action(formData);
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        await action(formData);
     }
 
     return (
-        <form className={formStyles.form} action={handleSubmit}>
+        <form className={formStyles.form} onSubmit={handleSubmit}>
             {inputs.map((input, i) => { 
                 return (
                     <div key={i} className={formStyles.formItem}>
