@@ -4,6 +4,10 @@ import { Prisma } from '@prisma/client';
 
 
 
+export const API_VERSION = 'v1';
+
+
+
 // TOKEN RESTRICTIONS
 // Maximum attempts allowed for one activation token, before it is deleted and user must request another
 export const MAX_ACTIVATE_TOKEN_ATTEMPTS = 5;
