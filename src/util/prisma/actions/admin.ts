@@ -6,12 +6,38 @@ import { prisma } from '@util/prisma/client';
 
 import { cookies } from 'next/headers';
 
+import { v4 as uuidv4 } from 'uuid';
+
 import { ADMIN_AUTH_TOKEN_COOKIE_KEY } from '@util/global-server';
 
 
 
+export const createAdminAuthToken = async (adminId: string) => {
+    const token = uuidv4();
+    await prisma.authToken.create({
+        data: {
+            token: token,
+            user: { connect: { id: adminId } }
+        }
+    });
+    return token;
+}
 
-// Get logged in admin.
+export const deleteAdminAuthToken = async (authToken: string) => {
+    await prisma.authToken.delete({
+        where: { token: authToken }
+    });
+}
+
+
+
+export const getAdmin = async (where: Prisma.AdminWhereUniqueInput) => {
+    const adminPrisma = await prisma.admin.findFirst({ where });
+    return adminPrisma;
+}
+
+
+
 export const getValidatedAdmin = async () => {
     const cookieStore = await cookies();
     const authTokenCookie = cookieStore.get(ADMIN_AUTH_TOKEN_COOKIE_KEY);
@@ -31,13 +57,13 @@ const getAdminFromAuth = async (authtoken: string) => {
         where: { token: authtoken },
         include: { admin: true }
     });
-    // Return null if auth token is expired
     if (!authTokenPrisma) return null;
     return authTokenPrisma.admin;
 }
 
 
 
+// USER ADMIN ACTIONS
 export const banUser = async (where: Prisma.UserWhereUniqueInput, banMsg: string, banExpiration?: Date) => {
     await prisma.user.update({
         where,
