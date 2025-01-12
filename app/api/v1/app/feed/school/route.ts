@@ -39,8 +39,8 @@ export async function GET(req: NextRequest) {
         if (emailSplit.length != 2) return response(`Something went wrong.`, 900); 
         const domain = emailSplit[1];
 
-        // Posts need to be less than 3 days old in order to be displayed.
-        const cutoff = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+        // Posts need to be less than 2 days old in order to be displayed.
+        const cutoff = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
 
         const where: Prisma.PostWhereInput = {
             deleted: false,
