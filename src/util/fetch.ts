@@ -1,3 +1,5 @@
+'use server'
+
 import { cookies } from 'next/headers';
 
 import { ADMIN_AUTH_TOKEN_COOKIE_KEY, API_VERSION } from './global-server';
@@ -5,6 +7,7 @@ import { ADMIN_AUTH_TOKEN_COOKIE_KEY, API_VERSION } from './global-server';
 
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
+
 
 
 // Note: This method differs from client "fetchBasic" by needing to specify "admin" or "app" as first part in route.
