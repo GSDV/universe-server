@@ -1,8 +1,9 @@
 'use server';
 
 import { Prisma } from '@prisma/client';
-import { makePasswordHash } from '@util/api/user';
+
 import { prisma } from '@util/prisma/client';
+
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -40,21 +41,6 @@ export const createActivateToken = async (email: string) => {
     return token;
 }
 
-// export const createActivateToken = async (displayName: string, username: string, email: string, password: string) => {
-//     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-//     let token = '';
-//     for (let i = 0; i < 6; i++) {
-//         const randomIndex = Math.floor(Math.random() * characters.length);
-//         token += characters[randomIndex];
-//     }
-
-//     const { hashedPassword, salt } = await makePasswordHash(password);
-
-//     await prisma.activateToken.create({
-//         data: { token, displayName, username, email, password: hashedPassword, salt }
-//     });
-//     return token;
-// }
 
 
 export const getActivateToken = async (where: Prisma.ActivateTokenWhereInput) => {
