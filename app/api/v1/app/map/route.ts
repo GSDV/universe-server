@@ -2,13 +2,13 @@ import { NextRequest } from 'next/server';
 
 import { Post } from '@prisma/client';
 
-import { getUserLike, INCLUDE_AUTHOR, response } from '@util/global-server';
-
-import { areValidScreenPoints, getScaledWrapperPoints } from '@util/geo';
 import { prisma } from '@util/prisma/client';
 import { getValidatedUser } from '@util/prisma/actions/user';
 
-// currently only considering non-meridian-passing points.
+import { getUserLike, INCLUDE_AUTHOR, response } from '@util/global-server';
+
+import { areValidScreenPoints, getScaledWrapperPoints, GRID_SIZE } from '@util/geo';
+
 
 
 /*
@@ -29,8 +29,6 @@ These points will not line up directly with grid square corners, even after scal
 They must be scaled and rounded up or down, depending on the corner.
 */
 
-
-const GRID_SIZE = 1000;
 
 
 // Used for fetching hot/trending posts to display on the feed screen.
