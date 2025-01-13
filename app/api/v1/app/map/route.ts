@@ -4,7 +4,7 @@ import { Post } from '@prisma/client';
 
 import { getUserLike, INCLUDE_AUTHOR, response } from '@util/global-server';
 
-import { areValidScreenPoints, getScaledWrapperPoints, STEP_FROM_NUM_GRIDS } from '@util/geo';
+import { areValidScreenPoints, getScaledWrapperPoints } from '@util/geo';
 import { prisma } from '@util/prisma/client';
 import { getValidatedUser } from '@util/prisma/actions/user';
 
@@ -54,8 +54,8 @@ export async function GET(req: NextRequest) {
         // Posts need to be less than 3 days old in order to be displayed.
         const cutoff = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
 
-        const lat_step = STEP_FROM_NUM_GRIDS(w_tr.lat - w_bl.lat);
-        const lng_step = STEP_FROM_NUM_GRIDS(w_tr.lng - w_bl.lng);
+        const lat_step = (w_tr.lat - w_bl.lat) / 5;
+        const lng_step = (w_tr.lng - w_bl.lng) / 4;
     
         // try doing one prisma call (not transaction) with OR and AND and .map() instead of this
         const hashmap = await prisma.$transaction(async (tx) => {
