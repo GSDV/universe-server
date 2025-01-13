@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import CheckIfLoading from '@components/Loading';
-import { CheckIfAlert, Alert } from '@components/Alert';
+import { CheckIfAlert, AlertType } from '@components/Alert';
 
 import { fetchAdminWithAuth } from '@util/fetch';
 
@@ -9,7 +9,7 @@ import { fetchAdminWithAuth } from '@util/fetch';
 
 export function CheckIfAdmin({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState<boolean>(true);
-    const [alert, setAlert] = useState<Alert | null>(null);
+    const [alert, setAlert] = useState<AlertType | null>(null);
 
     const checkAdmin = async () => {
         setLoading(true);

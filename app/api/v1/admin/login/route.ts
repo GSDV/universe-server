@@ -40,7 +40,12 @@ export async function PUT(req: NextRequest) {
         const authToken = await createAdminAuthToken(adminPrisma.id);
 
         const cookieStore = await cookies();
-        cookieStore.set(ADMIN_AUTH_TOKEN_COOKIE_KEY, authToken);
+        cookieStore.set(ADMIN_AUTH_TOKEN_COOKIE_KEY, authToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            path: '/'
+        });
 
         return response(`Success.`, 200);
     } catch (err) {
