@@ -10,6 +10,10 @@ import { hashPassword } from '@util/api/user';
 
 
 
+const COOKIE_EXPIRY = 7 * 24 * 60 * 60 * 1000; 
+
+
+
 // See if admin is logged in.
 export async function GET(req: NextRequest) {
     try {
@@ -44,7 +48,9 @@ export async function PUT(req: NextRequest) {
             httpOnly: true,
             secure: true,
             sameSite: 'strict',
-            path: '/'
+            path: '/',
+            maxAge: COOKIE_EXPIRY,
+            expires: new Date(Date.now() + COOKIE_EXPIRY)
         });
 
         return response(`Success.`, 200);
