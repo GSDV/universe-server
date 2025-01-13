@@ -1,6 +1,4 @@
-
 export const GRID_SIZE = 1000;
-
 
 
 interface Coord {
@@ -18,6 +16,7 @@ export const areValidScreenPoints = (p1: Coord, p2: Coord) => {
 }
 
 
+
 const normalizePoint = (p: Coord) => {
     p.lat = p.lat % 180;
     if (p.lat > 90) p.lat = 180 - p.lat;
@@ -30,11 +29,13 @@ const normalizePoint = (p: Coord) => {
 }
 
 
+
 export const getGridSquareFromPoint = (p: Coord) => {
     p.lat = (Math.round((p.lat + Number.EPSILON) * GRID_SIZE)) / GRID_SIZE;
     p.lng = (Math.round((p.lng + Number.EPSILON) * GRID_SIZE)) / GRID_SIZE;
     return p;
 }
+
 
 
 export const getScaledWrapperPoints = (bl: Coord, tr: Coord) => {
