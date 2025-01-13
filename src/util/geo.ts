@@ -52,11 +52,3 @@ export const getScaledWrapperPoints = (bl: Coord, tr: Coord) => {
 
     return { w_bl, w_tr };
 }
-
-
-
-// Number of grid squares shown => step
-// For now, just divide the number of grids by 5. 
-export const STEP_FROM_NUM_GRIDS = (numGrids: number) => {
-    return numGrids/5;
-}
