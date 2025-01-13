@@ -1,38 +1,31 @@
 'use client'
 
-// import CenterLayout from '@components/containers/CenterLayout';
-// import { CheckIfAdmin, Subsection } from '@components/pages/admin/Admin';
+import { useRouter } from 'next/router';
 
-// import styles from '@styles/pages/admin.module.css';
+import { CheckIfAdmin } from '@components/Admin';
 
-
-
+import styles from '@styles/pages/admin.module.css';
 
 
-export default function Page() {
+
+export default function Index() {
     return (
-        <div>
-            Admin
-        </div>
-    )
-    // return (
-    //     <CenterLayout>
-    //         <CheckIfAdmin content={<Dashboard />} />
-    //     </CenterLayout>
-    // );
+        <CheckIfAdmin>
+            <div className={styles.dashboard}>
+                <h1>Admin Dashboard</h1>
+                <div className={styles.actionsContainer}>
+                    <Subsection title='Users' link='/admin/users/' />
+                    <Subsection title='Posts' link='/admin/posts/' />
+                    <Subsection title='Promo' link='/admin/promos/' />
+                </div>
+            </div>
+        </CheckIfAdmin>
+    );
 }
 
 
 
-// function Dashboard() {
-//     return (
-//         <div className={styles.dashboard}>
-//             <h1>Admin Dashboard</h1>
-//             <div className={styles.actionsContainer}>
-//                 <Subsection title='Users' link='/admin/users/' />
-//                 <Subsection title='Posts' link='/admin/posts/' />
-//                 <Subsection title='Promo' link='/admin/promos/' />
-//             </div>
-//         </div>
-//     );
-// }
+export function Subsection({ title, link }: { title: string, link: string }) {
+    const router = useRouter();
+    return <div onClick={()=>router.push(link)} className={styles.subsection}>{title}</div>;
+}
