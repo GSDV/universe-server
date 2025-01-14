@@ -247,6 +247,8 @@ model AdminAuthToken {
 
     token               String              @unique
 
+    reqTimestamps       String[]
+
     adminId             String
     admin               Admin               @relation("AdminAuthToken", fields: [adminId], references: [id], onDelete: Cascade)
 }
