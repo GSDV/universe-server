@@ -51,14 +51,42 @@ export const getValidatedAdmin = async () => {
 }
 
 
-
+// Sliding window of 1 second
+const WINDOW_LENGTH = 1000;
+const MAX_REQ_PER_WINDOW = 2;
 const getAdminFromAuth = async (authtoken: string) => {
-    const authTokenPrisma = await prisma.adminAuthToken.findFirst({
-        where: { token: authtoken },
-        include: { admin: true }
+    const adminPrisma = await prisma.$transaction(async (tx) => {
+        const now = new Date();
+        const windowStart = new Date(Date.now() - WINDOW_LENGTH);
+
+        const adminAuthTokenPrisma = await tx.adminAuthToken.findUnique({
+            where: { token: authtoken },
+            include: { admin: true }
+        });
+
+        if (!adminAuthTokenPrisma) return null;
+
+        const validReqTimestamps = adminAuthTokenPrisma.reqTimestamps
+            .map(timeStr => new Date(timeStr))
+            .filter(time => time >= windowStart)
+            .sort((a, b) => a.getTime() - b.getTime());
+
+        // Check if rate limit exceeded.
+        // If so, return null. Do not add this as a request.
+        if (validReqTimestamps.length >= MAX_REQ_PER_WINDOW) return null;
+
+        validReqTimestamps.push(now);
+        await tx.adminAuthToken.update({
+            where: { id: adminAuthTokenPrisma.id },
+            data: {
+                reqTimestamps: validReqTimestamps.map(date => date.toISOString())
+            }
+        });
+
+        return adminAuthTokenPrisma.admin;
     });
-    if (!authTokenPrisma) return null;
-    return authTokenPrisma.admin;
+
+    return adminPrisma;
 }
 
 
