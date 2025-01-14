@@ -1,7 +1,5 @@
 import { NextRequest } from 'next/server';
 
-import { cookies } from 'next/headers';
-
 import { getAdmin, createAdminAuthToken, getValidatedAdmin } from '@util/prisma/actions/admin';
 
 import { ADMIN_AUTH_TOKEN_COOKIE_KEY, response } from '@util/global-server';
@@ -10,7 +8,7 @@ import { hashPassword } from '@util/api/user';
 
 
 
-const COOKIE_EXPIRY = 7 * 24 * 60 * 60 * 1000; 
+const COOKIE_EXPIRY = 3 * 24 * 60 * 60 * 1000; 
 
 
 
@@ -43,17 +41,20 @@ export async function PUT(req: NextRequest) {
 
         const authToken = await createAdminAuthToken(adminPrisma.id);
 
-        const cookieStore = await cookies();
-        cookieStore.set(ADMIN_AUTH_TOKEN_COOKIE_KEY, authToken, {
+        const res = response(`Success.`, 200);
+
+        res.cookies.set({
+            name: ADMIN_AUTH_TOKEN_COOKIE_KEY,
+            value: authToken,
             httpOnly: true,
-            secure: true,
+            secure: (process.env.NODE_ENV === 'production'),
             sameSite: 'strict',
             path: '/',
             maxAge: COOKIE_EXPIRY,
             expires: new Date(Date.now() + COOKIE_EXPIRY)
         });
 
-        return response(`Success.`, 200);
+        return res;
     } catch (err) {
         return response(`Server error.`, 903);
     }
