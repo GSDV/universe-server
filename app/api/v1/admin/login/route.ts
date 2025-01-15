@@ -16,7 +16,7 @@ const COOKIE_EXPIRY = 3 * 24 * 60 * 60 * 1000;
 export async function GET(req: NextRequest) {
     try {
         const adminPrisma = await getValidatedAdmin();
-        if (!adminPrisma) return response(`Not logged in.`, 100);
+        if (!adminPrisma) return response(`Unauthorized.`, 100);
 
         return response(`Success.`, 200); 
     } catch (_) {
