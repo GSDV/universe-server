@@ -24,7 +24,7 @@ export default function Index() {
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
         const body = JSON.stringify({ email, password });
-        const resJson = await fetchBasic(`admin/login`, 'PUT', body);
+        const resJson = await fetchBasic(`login`, 'PUT', body);
         setAlert(resJson);
         setLoading(false);
     }
