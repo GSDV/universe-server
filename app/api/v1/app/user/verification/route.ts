@@ -10,6 +10,7 @@ import { createActivateToken, createAuthToken, deleteActivateTokens, getActivate
 
 import { isActivateTokenExpired } from '@util/api/tokens';
 import { isValidEmail, isValidPassword } from '@util/api/user';
+import { sendVerificationEmail } from '@util/aws/ses';
 
 
 
@@ -39,8 +40,7 @@ export async function POST(req: NextRequest) {
         await deleteActivateTokens({ email });
 
         const activationToken = await createActivateToken(email);
-        // const sgCode = await sendActivationEmail(email, activationToken);
-        // if (sgCode!=200 && sgCode!=201 && sgCode!=204) response(`Unknown email error. Please try again.`, 801);
+        await sendVerificationEmail(email, activationToken);
 
         return response(`Check your email to activate your account.`, 200);
     } catch (_) {
