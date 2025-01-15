@@ -14,7 +14,6 @@
     "@aws-sdk/client-ses": "^3.726.1",
     "@aws-sdk/s3-request-presigner": "^3.679.0",
     "@prisma/client": "^6.2.1",
-    "@sendgrid/mail": "^8.1.4",
     "@vercel/functions": "^1.4.2",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
