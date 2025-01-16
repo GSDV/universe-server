@@ -102,29 +102,6 @@ export const getPostWithAncestorsClient = async (where: Prisma.PostWhereUniqueIn
 
 
 
-export const getRepliesClient = async (replyToId: string, pageNumber: number, loggedInUserId: string) => {
-    const replies = await prisma.post.findMany({
-        where: { replyToId },
-        include: {
-            ...INCLUDE_AUTHOR,
-            likes: getUserLike(loggedInUserId),
-        },
-        skip: POST_PER_SCROLL*(pageNumber-1),
-        take: POST_PER_SCROLL + 1
-    });
-
-    const clientReplies = replies.map(p => ({
-        ...p,
-        isLiked: p.likes.length > 0
-    }));
-
-    const moreRepliesAvailable = clientReplies.length > POST_PER_SCROLL;
-    if (moreRepliesAvailable) clientReplies.pop();
-    return { replies: clientReplies, moreRepliesAvailable };
-}
-
-
-
 export const updatePost = async (where: Prisma.PostWhereUniqueInput, data: Prisma.PostUpdateInput) => {
     await prisma.post.update({
         where,
