@@ -23,7 +23,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         if (!userPrisma) return validUserResp;
         const loggedInUserId = userPrisma.id;
 
-        // Will only fetch non-pinned, root posts.
         const where: Prisma.PostWhereInput = {
             authorId,
             pinned: false,
