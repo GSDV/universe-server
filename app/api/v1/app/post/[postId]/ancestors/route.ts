@@ -7,11 +7,10 @@ import { response } from '@util/global-server';
 
 
 
-// Given a postId, fetch all the replies to it.
+// Given a postId, fetch its ancestors.
 export async function GET(req: NextRequest, { params }: { params: Promise<{ postId: string }> }) {
     try {
         const postId = (await params).postId;
-        // dont need validation for route excepy\t for seeing if user liked a post before
         const { userPrisma } = await getValidatedUser();
         const loggedInId = (!userPrisma) ? '' : userPrisma.id;
 

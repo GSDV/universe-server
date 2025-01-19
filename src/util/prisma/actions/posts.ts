@@ -93,10 +93,23 @@ export const getPostWithAncestorsClient = async (where: Prisma.PostWhereUniqueIn
 
     if (!post) return null;
 
-    post.threadPosts = post.threadPosts.map(p => ({
-        ...p,
-        isLiked: p.likes.length > 0,
-    }));
+    // Redact deleted posts, but still send them back.
+    // Not sending them back breaks the ancestor thread.
+    post.threadPosts = post.threadPosts.map(p => (
+        (p.deleted) ?
+            ({
+                ...p,
+                content: '',
+                media: [],
+                isLiked: p.likes.length > 0
+            })
+        :
+            ({
+                ...p,
+                isLiked: p.likes.length > 0
+            })
+    ));
+
     return post;
 }
 
