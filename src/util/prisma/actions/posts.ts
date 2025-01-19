@@ -234,10 +234,10 @@ export const fetchClientBatchPosts = async (
 
     const clientPosts = makeClientPosts(posts);
 
-    const nextCursor = (clientPosts.length!=0) ? clientPosts[clientPosts.length - 1].id : '';
-
     const moreAvailable = clientPosts.length > POST_PER_SCROLL;
     if (moreAvailable) clientPosts.pop();
+
+    const nextCursor = (clientPosts.length!=0) ? clientPosts[clientPosts.length - 1].id : '';
 
     return { clientPosts, nextCursor, moreAvailable };
 }
