@@ -9,7 +9,7 @@ import { response } from '@util/global-server';
 
 
 
-// Used for fetching posts to display on an account screen.
+// Used for fetching replies to display on an account screen.
 export async function GET(req: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
     try {
         const { searchParams } = new URL(req.url);
