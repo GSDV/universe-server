@@ -19,6 +19,12 @@ export const createAuthToken = async (userId: string) => {
     return token;
 }
 
+export const deleteAllAuthToken = async (userId: string) => {
+    await prisma.authToken.deleteMany({
+        where: { userId }
+    });
+}
+
 export const deleteAuthToken = async (authToken: string) => {
     await prisma.authToken.delete({
         where: { token: authToken }
