@@ -4,7 +4,10 @@ import { CONTACT_EMAIL } from '@util/global';
 
 
 
-const FOOTER = `<p>Thank you for using UniVerse. Email ${CONTACT_EMAIL} for any questions.</p>`;
+const FOOTER = `
+<p style="margin: 0;">This email was sent from an unmonitored address, please do not reply. For questions, contact ${CONTACT_EMAIL}.</p>
+<p style="margin: 0;">Thank you for using UniVerse.</p>
+`;
 
 
 
@@ -30,15 +33,20 @@ export const sendVerificationEmail = async (recipient: string, verificationToken
                 },
                 Html: {
                     Data: `
-                        <h1>UniVerse Account Verification</h1>
-
-                        <p>This is your verification token: ${verificationToken}.</p>
-
-                        ${FOOTER}
+                        <div>
+                            <h1>UniVerse Account Verification</h1>
+                            <p>This is your verification token: ${verificationToken}.</p>
+                            ${FOOTER}
+                        </div>
                     `
                 }
             }
+        },
+        Headers: {
+            'Reply-To': { Data: 'no-reply@joinuniverse.app' },
+            'X-Auto-Response-Suppress': { Data: 'OOF, AutoReply' }
         }
+    
     };
 
     try {
