@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         const activationToken = await createActivateToken(email);
         await sendVerificationEmail(email, activationToken);
 
-        return response(`Check your email to activate your account.`, 200);
+        return response(`Email sent! Check your inbox to activate your account.`, 200);
     } catch (_) {
         return response(`Server error.`, 903);
     }
