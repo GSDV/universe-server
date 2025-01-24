@@ -17,9 +17,9 @@ export default function Page() {
 
             <h2>1. Acceptance of Privacy Policy</h2>
 
-            <p>Please read this Privacy Policy ("Policy") carefully before using UniVerse (the "Service") operated by UniVerse ("us", "we", or "our").</p>
+            <p>Please read this Privacy Policy (&quot;Policy&quot;) carefully before using UniVerse (the &quot;Service&quot;) operated by UniVerse (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;).</p>
 
-            <p>By using this university social media platform (the "Service"), you accept and agree to this Privacy Policy and acknowledge that your personal information will be handled as described. If you do not agree with this Privacy Policy, please do not use the Service.</p>
+            <p>By using this university social media platform (the &quot;Service&quot;), you accept and agree to this Privacy Policy and acknowledge that your personal information will be handled as described. If you do not agree with this Privacy Policy, please do not use the Service.</p>
 
             <p>You also agree that you are of legal age to attend university in your jurisdiction and have a valid university email address.</p>
 
@@ -117,7 +117,7 @@ export default function Page() {
 
             <h2>9. Changes to This Policy</h2>
 
-            <p>We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last updated" date</p>
+            <p>We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the &quot;Last updated&quot; date</p>
 
             <p>When we make significant changes, we will notify you through the app or by email. Your continued use of the service after such modifications constitutes your acknowledgment of the modified Privacy Policy</p>
 

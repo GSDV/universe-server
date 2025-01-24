@@ -17,9 +17,9 @@ export default function Page() {
 
             <h2>1. Acceptance of Terms</h2>
 
-            <p>Please read these Terms of Service ("Terms", "Terms of Service") carefully before using UniVerse (the "Service") operated by UniVerse ("us", "we", or "our").</p>
+            <p>Please read these Terms of Service (&quot;Terms&quot;, &quot;Terms of Service&quot;) carefully before using UniVerse (the &quot;Service&quot;) operated by UniVerse (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;).</p>
 
-            <p>By accessing this Service, you ("User", "you", or "your") are agreeing to be bound by these Terms of Service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.</p>
+            <p>By accessing this Service, you (&quot;User&quot;, &quot;you&quot;, or &quot;your&quot;) are agreeing to be bound by these Terms of Service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.</p>
 
 
 
@@ -163,7 +163,7 @@ export default function Page() {
             <h3>8.1 Service Availability</h3>
             <p>You understand and agree that:</p>
             <ul>
-                <li>The Service is provided "as is" and "as available" without warranties of any kind</li>
+                <li>The Service is provided &quot;as is&quot; and &quot;as available&quot; without warranties of any kind</li>
                 <li>We do not guarantee uninterrupted or error-free service</li>
                 <li>We may modify or discontinue features without notice</li>
             </ul>
