@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         if (userUsernamePrisma) return response(`Username is already taken.`, 405);
 
         const prevActivationToken = await getActivateToken({ email });
-        if (!isActivateTokenExpired(prevActivationToken)) return response(`Please wait before requesting another verification email.`, 510);
+        if (isActivateTokenExpired(prevActivationToken)) return response(`Please wait before requesting another verification email.`, 510);
         await deleteActivateTokens({ email });
 
         const activationToken = await createActivateToken(email);

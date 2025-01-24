@@ -7,7 +7,7 @@ import { createRPToken, deleteRPTokens, getRPToken } from '@util/prisma/actions/
 
 import { response } from '@util/global-server';
 
-import { hashPassword, isValidUser } from '@util/api/user';
+import { hashPassword, isValidEmail, isValidUser } from '@util/api/user';
 import { isRPTokenExpired } from '@util/api/tokens';
 import { sendResetPasswordEmail } from '@util/aws/ses';
 
@@ -18,13 +18,14 @@ export async function POST(req: NextRequest) {
     try {
         const { email } = await req.json();
         if (typeof email != 'string') return response(`Missing email field.`, 101);
+        if (email == '' || !isValidEmail(email)) return response(`Please use your school "...@edu" email.`, 102);
 
         const userPrisma = await getUser({ email });
         const isValid = isValidUser(userPrisma);
         if (!isValid.valid || !userPrisma) return isValid.res;
 
         const prevRpToken = await getRPToken({ userId: userPrisma.id });
-        if (!isRPTokenExpired(prevRpToken)) return response(`Please wait before requesting another reset password email.`, 510);
+        if (isRPTokenExpired(prevRpToken)) return response(`Please wait before requesting another reset password email.`, 510);
         await deleteRPTokens({ userId: userPrisma.id });
 
         const rpToken = await createRPToken(userPrisma.id);
