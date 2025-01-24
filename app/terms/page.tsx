@@ -58,7 +58,7 @@ export default function Page() {
             <ul>
                 <li>Create or use multiple accounts</li>
                 <li>Sell or transfer your account</li>
-                <li>Create an account using another person's identity</li>
+                <li>Create an account using another person&apos;s identity</li>
             </ul>
 
             <h3>3.2 Account Moderation</h3>
@@ -81,7 +81,7 @@ export default function Page() {
                 <li>Access, store, and scan your content</li>
             </ul>
             <p>You retain ownership of content you post on the Service. By posting content, you grant us a worldwide, non-exclusive, royalty-free license to use, copy, modify, distribute, and display your content.</p>
-            <p>You agree that your content will be viewable by other users of the Service and that other users may interact with, share, or engage with your content as permitted by the Service's functionality (such as through likes or replies).</p>
+            <p>You agree that your content will be viewable by other users of the Service and that other users may interact with, share, or engage with your content as permitted by the Service&apos;s functionality (such as through likes or replies).</p>
 
             <h3>4.2 Prohibited Content</h3>
             <p>You agree not to post prohibited content. Prohibited content includes but is not limited to:</p>
@@ -108,7 +108,7 @@ export default function Page() {
 
             <p>Users must:</p>
             <ul>
-                <li>Respect other users' privacy and personal information</li>
+                <li>Respect other users&apos; privacy and personal information</li>
                 <li>Report inappropriate content or behavior</li>
                 <li>Follow university-specific guidelines and policies</li>
                 <li>Maintain civil discourse and respect diverse viewpoints</li>

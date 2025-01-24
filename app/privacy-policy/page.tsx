@@ -109,7 +109,7 @@ export default function Page() {
 
 
 
-            <h2>8. Children's Privacy</h2>
+            <h2>8. Children&apos;s Privacy</h2>
 
             <p>Our service is intended for university students and is not directed at children under 18. We do not knowingly collect personal information from children under 18.</p>
 
