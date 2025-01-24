@@ -7,7 +7,7 @@ import styles from '@styles/pages/file.module.css';
 export default function Page() {
     return (
         <div className={styles.container}>
-            <p>Last Updated: January 22, 2025</p>
+            <p>Last Updated: January 24, 2025</p>
 
             <h1>Terms of Service</h1>
 
@@ -45,7 +45,7 @@ export default function Page() {
             <h2>3. User Account</h2>
 
             <h3>3.1 Registration</h3>
-            <p> You agree to:</p>
+            <p>You agree to:</p>
             <ul>
                 <li>Register for an account using your university email address</li>
                 <li>Provide accurate, current, and complete information</li>
@@ -54,7 +54,7 @@ export default function Page() {
             </ul>
 
             <h3>3.2 Account Restrictions</h3>
-            <p> You agree not to:</p>
+            <p>You agree not to:</p>
             <ul>
                 <li>Create or use multiple accounts</li>
                 <li>Sell or transfer your account</li>
@@ -161,7 +161,7 @@ export default function Page() {
             <h2>8. Disclaimers and Limitations</h2>
 
             <h3>8.1 Service Availability</h3>
-            <p> You understand and agree that:</p>
+            <p>You understand and agree that:</p>
             <ul>
                 <li>The Service is provided "as is" and "as available" without warranties of any kind</li>
                 <li>We do not guarantee uninterrupted or error-free service</li>
