@@ -75,6 +75,7 @@ export const sendResetPasswordEmail = async (recipient: string, rpToken: string)
                             <h1>UniVerse Password Reset</h1>
                             <p>Click <a href='https://joinuniverse.app/reset-password/${rpToken}'>here</a> to reset your password.</p>
                             <p>If the above link does not work, copy this link: https://joinuniverse.app/reset-password/${rpToken}</p>
+                            <p>If you did not ask to reset your password, you may safely ignore this email.</p>
                             ${FOOTER}
                         </div>
                     `
