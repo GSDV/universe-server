@@ -56,3 +56,42 @@ export const sendVerificationEmail = async (recipient: string, verificationToken
         throw error;
     }
 }
+
+
+
+export const sendResetPasswordEmail = async (recipient: string, rpToken: string) => {
+    const params = {
+        Source: '"UniVerse" <password@joinuniverse.app>',
+        Destination: { ToAddresses: [recipient] },
+        Message: {
+            Subject: { Data: 'Reset Your Password' },
+            Body: {
+                Text: {
+                    Data: `Copy this link to reset your password: https://joinuniverse.app/reset-password/${rpToken}`
+                },
+                Html: {
+                    Data: `
+                        <div>
+                            <h1>UniVerse Password Reset</h1>
+                            <p>Click <a href='https://joinuniverse.app/reset-password/${rpToken}'>here</a> to reset your password.</p>
+                            <p>If the above link does not work, copy this link: https://joinuniverse.app/reset-password/${rpToken}</p>
+                            ${FOOTER}
+                        </div>
+                    `
+                }
+            }
+        },
+        Headers: {
+            'Reply-To': { Data: 'no-reply@joinuniverse.app' },
+            'X-Auto-Response-Suppress': { Data: 'OOF, AutoReply' }
+        }
+    
+    };
+
+    try {
+        const command = new SendEmailCommand(params);
+        await sesClient.send(command);
+    } catch (error) {
+        throw error;
+    }
+}
