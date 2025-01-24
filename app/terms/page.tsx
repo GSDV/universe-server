@@ -19,7 +19,7 @@ export default function Page() {
 
             <p>Please read these Terms of Service ("Terms", "Terms of Service") carefully before using UniVerse (the "Service") operated by UniVerse ("us", "we", or "our").</p>
 
-            <p>By accessing this Service, you are agreeing to be bound by these Terms of Service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.</p>
+            <p>By accessing this Service, you ("User", "you", or "your") are agreeing to be bound by these Terms of Service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.</p>
 
 
 
