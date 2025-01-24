@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
 import CheckIfLoading from '@components/Loading';
-import { AlertType, CheckIfAlert } from '@components/Alert';
+import { Alert, AlertType } from '@components/Alert';
 import Form, { FormInputType } from '@components/Form';
 
 import { fetchRegular } from '@util/fetch';
@@ -13,8 +13,7 @@ import { fetchRegular } from '@util/fetch';
 
 
 export default function Page() {
-    const searchParams = useSearchParams();
-    const rpToken = searchParams.get('rpToken');
+    const rpToken = useParams().rpToken;
 
     const [loading, setLoading] = useState<boolean>(false);
     const [alert, setAlert] = useState<AlertType | null>(null);
@@ -23,33 +22,22 @@ export default function Page() {
         { title: 'New Password', name: 'newPassword', type: 'text' }
     ];
 
-    const checkRPToken = async () => {
+    const onSubmit = async (formData: FormData) => {
         setLoading(true);
-        const body = JSON.stringify({ rpToken });
+        const newPassword = formData.get('newPassword');
+        const body = JSON.stringify({ newPassword, rpToken });
         const resJson = await fetchRegular(`password`, 'PUT', body);
-        if (resJson.cStatus != 200) setAlert(resJson);
+        setAlert(resJson);
         setLoading(false);
     }
 
-    const onSubmit = async (formData: FormData) => {
-        const newPassword = formData.get('newPassword');
-        const body = JSON.stringify({ newPassword });
-        const resJson = await fetchRegular(`password`, 'POST', body);
-        setAlert(resJson);
-    }
-
-    useEffect(() => {
-        checkRPToken();
-    }, []);
-
     return (
         <CheckIfLoading loading={loading}>
-            <CheckIfAlert alert={alert}>
                 <div style={{ padding: '30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
                     <h1 style={{ textAlign: 'center' }}>Reset Password</h1>
                     <Form action={onSubmit} inputs={inputs} submitTitle='Submit' />
+                    {alert && <Alert alert={alert} />}
                 </div>
-            </CheckIfAlert>
         </CheckIfLoading>
     );
 }
