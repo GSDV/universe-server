@@ -211,10 +211,10 @@ export default function Page() {
             <h2>11. Governing Law and Jurisdiction</h2>
 
             <h3>11.1 Choice of Law</h3>
-            <p>These Terms shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of law provisions.</p>
+            <p>These Terms shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of law provisions.</p>
 
             <h3>11.2 Dispute Resolution</h3>
-            <p>Any dispute arising from or relating to these Terms shall be resolved exclusively in the state or federal courts located in California. You consent to the personal jurisdiction of such courts and waive any objection to proceedings in such courts.</p>
+            <p>Any dispute arising from or relating to these Terms shall be resolved exclusively in the state or federal courts located in Delaware. You consent to the personal jurisdiction of such courts and waive any objection to proceedings in such courts.</p>
 
             <h3>11.3 Class Action Waiver</h3>
             <p>You agree that any proceedings to resolve or litigate any dispute will be conducted solely on an individual basis. You agree not to seek to have any dispute heard as a class action, representative action, collective action, or private attorney general action.</p>
