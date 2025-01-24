@@ -1,11 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import { fetchRegular } from '@util/fetch';
+
 import { useSearchParams } from 'next/navigation';
+
 import CheckIfLoading from '@components/Loading';
 import { AlertType, CheckIfAlert } from '@components/Alert';
 import Form, { FormInputType } from '@components/Form';
+
+import { fetchRegular } from '@util/fetch';
 
 
 
@@ -36,7 +39,7 @@ export default function Page() {
     }
 
     useEffect(() => {
-        // checkRPToken();
+        checkRPToken();
     }, []);
 
     return (
