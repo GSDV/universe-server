@@ -7,7 +7,7 @@ import { createRPToken, deleteRPTokens, getRPToken } from '@util/prisma/actions/
 
 import { response } from '@util/global-server';
 
-import { hashPassword, isValidEmail, isValidUser } from '@util/api/user';
+import { hashPassword, isValidEmail, isValidPassword, isValidUser } from '@util/api/user';
 import { isRPTokenExpired } from '@util/api/tokens';
 import { sendResetPasswordEmail } from '@util/aws/ses';
 
@@ -43,7 +43,8 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
     try {
         const { newPassword, rpToken } = await req.json();
-        if (typeof newPassword != 'string' || typeof rpToken != 'string') return response(`Missing data fields.`, 101);
+        if (typeof newPassword != 'string' || typeof rpToken != 'string' || rpToken === '') return response(`Missing data fields.`, 101);
+        if (newPassword == '' || !isValidPassword(newPassword)) return response(`Use a password with 5 to 50 characters, consisting only of letters, numbers, and the symbols #, $, %, and &.`, 102);
 
         const rpTokenPrisma = await getRPToken({ token: rpToken });
         if (!rpTokenPrisma) return response(`Reset password token is expired.`, 102);
