@@ -9,8 +9,13 @@ export default function Page() {
         <div className={styles.container}>
             <p>Last Updated: January 22, 2025</p>
 
-
             <h1>Terms of Service</h1>
+
+
+
+
+
+            <h2>1. Acceptance of Terms</h2>
 
             <p>Please read these Terms of Service ("Terms", "Terms of Service") carefully before using UniVerse (the "Service") operated by UniVerse ("us", "we", or "our").</p>
 
