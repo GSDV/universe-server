@@ -25,7 +25,7 @@ export default function Index() {
 
 
 
-export function Subsection({ title, link }: { title: string, link: string }) {
+function Subsection({ title, link }: { title: string, link: string }) {
     const router = useRouter();
     return <div onClick={()=>router.push(link)} className={styles.subsection}>{title}</div>;
 }
