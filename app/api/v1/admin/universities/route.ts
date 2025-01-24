@@ -37,20 +37,17 @@ export async function POST(req: NextRequest) {
         const adminPrisma = await getValidatedAdmin();
         if (!adminPrisma) return response(`Unauthorized.`, 100);
 
-        const searchParams = req.nextUrl.searchParams;
-        const operation = searchParams.get('operation');
-        const encodedData = searchParams.get('data');
-        const data = JSON.parse(encodedData as string);
+        const { operation, data } = await req.json();
 
         switch (operation) {
-            case 'MAKE_UNI':
+            case 'CREATE_UNI':
                 const uniResult = await createUni(data.domain, data.name, data.color);
                 if (!uniResult) return response(`Something went wrong.`, 100);
                 return response(`Success`, 200, { uni: uniResult.uniPrisma, updatedUsersCount: uniResult.updatedUsersCount });
             default:
                 return response(`Unknown operation.`, 100);
         }
-    }  catch (_) {
+    }  catch (err) {
         return response(`Server Error.`, 100);
     }
 }
@@ -62,10 +59,7 @@ export async function DELETE(req: NextRequest) {
         const adminPrisma = await getValidatedAdmin();
         if (!adminPrisma) return response(`Unauthorized.`, 100);
 
-        const searchParams = req.nextUrl.searchParams;
-        const operation = searchParams.get('operation');
-        const encodedData = searchParams.get('data');
-        const data = JSON.parse(encodedData as string);
+        const { operation, data } = await req.json();
 
         switch (operation) {
             case 'DELETE_UNI':
