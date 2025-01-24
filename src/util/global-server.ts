@@ -13,6 +13,8 @@ export const API_VERSION = 'v1';
 export const MAX_ACTIVATE_TOKEN_ATTEMPTS = 5;
 // ActivateTokens are expired if they were sent more than an hour ago
 export const ACTIVATE_TOKEN_EXPIRATION = 60;
+// RP Tokens are expired if they were sent more than an hour ago
+export const RP_TOKEN_EXPIRATION = 60;
 
 
 

@@ -75,3 +75,29 @@ export const markActivateTokenAsExpired = async (tokenId: string) => {
         data: { expired: true }
     });
 }
+
+
+
+export const createRPToken = async (userId: string) => {
+    const token = uuidv4();
+    await prisma.authToken.create({
+        data: {
+            token: token,
+            user: { connect: { id: userId } }
+        }
+    });
+    return token;
+}
+
+export const getRPToken = async (where: Prisma.RPTokenWhereInput) => {
+    const tokenPrisma = await prisma.rPToken.findFirst({
+        where,
+        include: { user: true }
+    });
+    return tokenPrisma;
+}
+
+export const deleteRPTokens = async (where: Prisma.RPTokenWhereInput) => {
+    const tokenPrisma = await prisma.rPToken.deleteMany({ where });
+    return tokenPrisma;
+}
