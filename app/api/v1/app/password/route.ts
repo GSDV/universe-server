@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         const rpToken = await createRPToken(userPrisma.id);
         await sendResetPasswordEmail(userPrisma.email, rpToken);
 
-        return response(`Email sent! Check your inbox to reset your password`, 200);
+        return response(`Email sent! Check your inbox to reset your password.`, 200);
     } catch (err) {
         return response(`Server error.`, 900);
     }
