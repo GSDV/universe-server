@@ -22,7 +22,7 @@ export const ACCOUNT_POSTS_PER_BATCH = 15;
 export const MIN_USERNAME_LENGTH = 4;
 export const MAX_USERNAME_LENGTH = 25;
 export const isValidUsername = (input: string) => {
-    const pattern = /^[a-z][a-z0-9]+$/;
+    const pattern = /^[a-z][a-zA-Z0-9]+$/;
     return (
         input.length >= MIN_USERNAME_LENGTH && 
         input.length <= MAX_USERNAME_LENGTH && 
