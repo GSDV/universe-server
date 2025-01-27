@@ -7,6 +7,9 @@ import '@styles/globals.css';
 export const metadata: Metadata = {
     title: 'UniVerse',
     description: 'Connecting College Students',
+    icons: {
+        icon: '/favicon.ico',
+    }
 };
 
 
