@@ -5,7 +5,7 @@ import { getValidatedUser } from '@util/prisma/actions/user';
 import { ACCEPTED_IMGS, AVATAR_SIZE_LIMIT_TXT, AVATAR_SIZE_LIMIT, avatarKeyPrefix } from '@util/global';
 import { response } from '@util/global-server';
 
-import { deleteFromS3, getSignedS3Url } from '@util/aws';
+import { deleteFromS3, getSignedS3Url } from '@util/aws/s3';
 
 
 

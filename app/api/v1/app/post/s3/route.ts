@@ -5,7 +5,7 @@ import { getValidatedUser } from '@util/prisma/actions/user';
 import { ACCEPTED_FILES, ACCEPTED_IMGS, ACCEPTED_VIDS, IMG_SIZE_LIMIT, IMG_SIZE_LIMIT_TXT, VID_SIZE_LIMIT, VID_SIZE_LIMIT_TXT, mediaKeyPrefix } from '@util/global';
 import { response } from '@util/global-server';
 
-import { getSignedS3Url } from '@util/aws';
+import { getSignedS3Url } from '@util/aws/s3';
 
 
 
