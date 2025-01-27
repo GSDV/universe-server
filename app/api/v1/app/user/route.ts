@@ -45,7 +45,8 @@ export async function PUT(req: NextRequest) {
         const user = redactUserPrisma(userPrisma);
 
         return response(`Success.`, 200, { authToken, user });
-    } catch (_) {
+    } catch (err) {
+        console.log(err)
         return response(`Server error.`, 903);
     }
 }
