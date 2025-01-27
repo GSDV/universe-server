@@ -22,8 +22,8 @@
       }
     ],
     "paths": {
-      "@assets/*": [
-        "./src/assets/*"
+      "@public/*": [
+        "./src/public/*"
       ],
       "@api/*": [
         "./src/api/*"
