@@ -21,13 +21,13 @@ export async function POST(req: NextRequest) {
         if (!ACCEPTED_IMGS.includes(fileType)) return response(`Upload only png or jpg files.`, 102);
         if (fileSize > AVATAR_SIZE_LIMIT) return response(`Upload images less than ${AVATAR_SIZE_LIMIT_TXT}.`, 102);
 
-        await deleteFromS3(userPrisma.pfpKey);
+        if (userPrisma.pfpKey !== '') await deleteFromS3(userPrisma.pfpKey);
 
         const avatarPrefix = avatarKeyPrefix(userPrisma.id);
         const { signedUrl, key } = await getSignedS3Url(avatarPrefix, fileType);
 
         return response(`Success`, 200, { signedUrl, key });
-    } catch (err) {
+    } catch (_) {
         return response(`Server error.`, 900);
     }
 }
