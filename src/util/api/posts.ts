@@ -28,7 +28,7 @@ export const validateCreateReplyData = (input: any) => {
 
 
 
-interface RetrievedPost extends Post {
+export interface RetrievedPost extends Post {
     author: RedactedUserWithUni;
     likes: { id: string }[];
 }
