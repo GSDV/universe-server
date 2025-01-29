@@ -1,13 +1,12 @@
 import { NextRequest } from 'next/server';
 
-import { Post } from '@prisma/client';
-
 import { prisma } from '@util/prisma/client';
 import { getValidatedUser } from '@util/prisma/actions/user';
 
 import { getUserLike, INCLUDE_AUTHOR, response } from '@util/global-server';
 
 import { areValidScreenPoints, getScaledWrapperPoints, GRID_SIZE } from '@util/geo';
+import { makeClientPosts, RetrievedPost } from '@util/api/posts';
 
 
 
@@ -57,7 +56,7 @@ export async function GET(req: NextRequest) {
     
         // try doing one prisma call (not transaction) with OR and AND and .map() instead of this
         const hashmap = await prisma.$transaction(async (tx) => {
-            const map = new Map<string, Post[]>();
+            const map = new Map<string, RetrievedPost[]>();
 
             for (
                 let lat_ptr = w_bl.lat;
@@ -88,13 +87,9 @@ export async function GET(req: NextRequest) {
             return map;
         });
 
-        const posts = [...hashmap.values()].flat().map(post => ({
-            ...post,
-            lat: post.lat ? Number(post.lat) : null,
-            lng: post.lng ? Number(post.lng) : null
-        }));
+        const clientPosts = makeClientPosts([...hashmap.values()].flat());
 
-        return response(`Success.`, 200, { posts });
+        return response(`Success.`, 200, { posts: clientPosts });
     } catch (err) {
         return response(`Server error.`, 904);
     }
