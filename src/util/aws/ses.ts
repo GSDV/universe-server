@@ -51,7 +51,8 @@ export const sendVerificationEmail = async (recipient: string, verificationToken
 
     try {
         const command = new SendEmailCommand(params);
-        await sesClient.send(command);
+        const eee = await sesClient.send(command);
+        console.log(eee)
     } catch (error) {
         throw error;
     }
