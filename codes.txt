@@ -8,6 +8,7 @@ Custom Status Codes (cStatus)
 - 102: Some fields of data (which are provided by the user) have invalid or incorrect data.
 - 103: No auth token cookie provided.
 - 110: Unknown operation.
+- 150: New version of app is available.
 - 199: Intentionally obfuscating error.
 
 
