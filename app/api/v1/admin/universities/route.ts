@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
                 return response(`Unknown operation.`, 100);
         }
     }  catch (err) {
+        console.log(err)
         return response(`Server Error.`, 100);
     }
 }
