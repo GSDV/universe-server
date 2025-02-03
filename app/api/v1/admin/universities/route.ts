@@ -34,15 +34,20 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
+        console.log("111")
         const adminPrisma = await getValidatedAdmin();
         if (!adminPrisma) return response(`Unauthorized.`, 100);
 
         const { operation, data } = await req.json();
 
+        console.log("222")
         switch (operation) {
             case 'CREATE_UNI':
+                console.log("AAA")
                 const uniResult = await createUni(data.domain, data.name, data.color);
+                console.log("BBB")
                 if (!uniResult) return response(`Something went wrong.`, 100);
+                console.log("CCC")
                 return response(`Success`, 200, { uni: uniResult.uniPrisma, updatedUsersCount: uniResult.updatedUsersCount });
             default:
                 return response(`Unknown operation.`, 100);
