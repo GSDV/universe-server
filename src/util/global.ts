@@ -2,7 +2,6 @@
 
 
 
-export const BRAND = 'UniVerse';
 export const CONTACT_EMAIL = 'support@joinuniverse.app';
 
 
