@@ -33,10 +33,15 @@ export async function POST(req: NextRequest) {
         }
 
         if (typeof pfpKey == 'string') {
+            console.log("Hi");
             const avatarPrefix = avatarKeyPrefix(userPrisma.id);
+            console.log("avatarPrefix: ", avatarPrefix);
+            console.log("!pfpKey.startsWith(avatarPrefix: ", !pfpKey.startsWith(avatarPrefix));
             if (!pfpKey.startsWith(avatarPrefix)) return response(`Logged in account differs from upload.`, 102);
+            console.log(userPrisma.pfpKey !== '');
             if (userPrisma.pfpKey !== '') await deleteFromS3(userPrisma.pfpKey);
             else newData.pfpKey = pfpKey;
+            console.log(pfpKey);
         }
 
         if (typeof bio == 'string') {
@@ -49,6 +54,7 @@ export async function POST(req: NextRequest) {
         return response('Success', 200, { user: redactUserPrisma(newUserPrisma) });
     } catch (err: any) {
         if ((err.code, err.code === 'P2002') && (err.meta?.target?.includes('username'))) return response(`This username is already taken.`, 405);
+        console.log(err);
         return response(`Server error.`, 903);
     }
 }
