@@ -37,9 +37,11 @@ export async function POST(req: NextRequest) {
             const avatarPrefix = avatarKeyPrefix(userPrisma.id);
             console.log("avatarPrefix: ", avatarPrefix);
             console.log("!pfpKey.startsWith(avatarPrefix: ", !pfpKey.startsWith(avatarPrefix));
-            if (!pfpKey.startsWith(avatarPrefix)) return response(`Logged in account differs from upload.`, 102);
-            console.log(userPrisma.pfpKey !== '');
+
+            console.log(userPrisma.pfpKey, pfpKey);
             if (userPrisma.pfpKey !== '') await deleteFromS3(userPrisma.pfpKey);
+
+            if (!pfpKey.startsWith(avatarPrefix)) return response(`Logged in account differs from upload.`, 102);
             else newData.pfpKey = pfpKey;
             console.log(pfpKey);
         }
