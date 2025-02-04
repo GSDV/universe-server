@@ -5,7 +5,7 @@ import { getValidatedUser } from '@util/prisma/actions/user';
 import { ACCEPTED_IMGS, AVATAR_SIZE_LIMIT_TXT, AVATAR_SIZE_LIMIT, avatarKeyPrefix } from '@util/global';
 import { response } from '@util/global-server';
 
-import { deleteFromS3, getSignedS3Url } from '@util/aws/s3';
+import { getSignedS3Url } from '@util/aws/s3';
 
 
 
@@ -20,8 +20,6 @@ export async function POST(req: NextRequest) {
 
         if (!ACCEPTED_IMGS.includes(fileType)) return response(`Upload only png or jpg files.`, 102);
         if (fileSize > AVATAR_SIZE_LIMIT) return response(`Upload images less than ${AVATAR_SIZE_LIMIT_TXT}.`, 102);
-
-        if (userPrisma.pfpKey !== '') await deleteFromS3(userPrisma.pfpKey);
 
         const avatarPrefix = avatarKeyPrefix(userPrisma.id);
         const { signedUrl, key } = await getSignedS3Url(avatarPrefix, fileType);

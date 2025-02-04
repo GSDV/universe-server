@@ -6,6 +6,7 @@ import { avatarKeyPrefix, isValidBio, isValidDisplayName, isValidUsername } from
 import { response } from '@util/global-server';
 
 import { redactUserPrisma } from '@util/api/user';
+import { deleteFromS3 } from '@util/aws/s3';
 
 
 
@@ -34,6 +35,7 @@ export async function POST(req: NextRequest) {
         if (typeof pfpKey == 'string') {
             const avatarPrefix = avatarKeyPrefix(userPrisma.id);
             if (!pfpKey.startsWith(avatarPrefix)) return response(`Logged in account differs from upload.`, 102);
+            if (userPrisma.pfpKey !== '') await deleteFromS3(userPrisma.pfpKey);
             else newData.pfpKey = pfpKey;
         }
 
