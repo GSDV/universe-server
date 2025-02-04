@@ -18,7 +18,7 @@ export const createUser = async (displayName: string, username: string, email: s
 
     const domain = email.split('@')[1];
 
-    const {newUser: userPrisma, uniPrisma} = await prisma.$transaction(async (tx) => {
+    const userPrisma = await prisma.$transaction(async (tx) => {
         const uniPrisma = await tx.university.findUnique({
             where: { domain }
         });
@@ -36,9 +36,8 @@ export const createUser = async (displayName: string, username: string, email: s
             include: { university: true }
         });
         
-        return {newUser, uniPrisma};
+        return newUser;
     });
-    console.log(uniPrisma)
 
     return userPrisma;
 }
