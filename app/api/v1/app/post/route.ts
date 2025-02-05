@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
         return response(`Success`, 200, { postId: post.id, post });
     } catch (errr) {
-        console.log(errr.message)
+        console.log(errr)
         return response(`Server error.`, 903);
     }
 }
