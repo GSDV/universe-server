@@ -34,11 +34,13 @@ export async function PUT(req: NextRequest) {
         if (password == '') return response(`Provide your password.`, 102);
 
         const userPrisma = await getUser({ email });
+        console.log(userPrisma);
         if (!userPrisma) return response(`Wrong email or password.`, 199);
         if (userPrisma.banned) return response(`Wrong email or password.`, 199);
         if (userPrisma.deleted) return response(`This account has been deleted, email ${CONTACT_EMAIL} to reinstate it.`, 411);
 
         const hashedPassword = await hashPassword(password, userPrisma.salt);
+        console.log("Wrong password?", hashedPassword !== userPrisma.password);
         if (hashedPassword !== userPrisma.password) return response(`Wrong email or password.`, 199);
 
         const authToken = await createAuthToken(userPrisma.id);
