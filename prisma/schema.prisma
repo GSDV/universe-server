@@ -95,8 +95,6 @@ model Post {
     updatedAt           DateTime            @updatedAt
     id                  String              @id @default(cuid())
 
-    displayDate         DateTime            @default(now())
-
     // Seller who posted the post
     authorId            String
     author              User                @relation("UserPost", fields: [authorId], references: [id], onDelete: Cascade)
