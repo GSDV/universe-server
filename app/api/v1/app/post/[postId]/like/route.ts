@@ -1,5 +1,7 @@
 import { NextRequest } from 'next/server';
 
+import { waitUntil } from '@vercel/functions';
+
 import { getValidatedUser } from '@util/prisma/actions/user';
 import { likePost, unlikePost } from '@util/prisma/actions/posts';
 
@@ -20,11 +22,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pos
 
         // Note: we do NOT need to check if the post actually exists.
         // Prisma transactions (used in likePost and unlikePost) are atomic.
-        if (liked) likePost(postId, userPrisma.id);
-        else unlikePost(postId, userPrisma.id);
+        if (liked) waitUntil(likePost(postId, userPrisma.id));
+        else waitUntil(unlikePost(postId, userPrisma.id));
 
         return response(`Success`, 200);
-    } catch (err) {
+    } catch (_) {
         return response(`Server error.`, 904);
     }
 }
