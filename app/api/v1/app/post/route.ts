@@ -32,8 +32,7 @@ export async function POST(req: NextRequest) {
         const post = await createPost(userPrisma.id, postData);
 
         return response(`Success`, 200, { postId: post.id, post });
-    } catch (errr) {
-        console.log(errr)
+    } catch (_) {
         return response(`Server error.`, 903);
     }
 }
