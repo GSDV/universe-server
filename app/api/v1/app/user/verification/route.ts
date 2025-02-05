@@ -21,10 +21,12 @@ export async function POST(req: NextRequest) {
         const { data } = await req.json();
 
         if (!data) return response(`No data provided.`, 101);
-        const { displayName, username, email, password } = data;
+        let { displayName, username, email, password } = data;
 
         if (typeof displayName != 'string' || typeof username != 'string' || typeof email != 'string' || typeof password != 'string') return response(`Missing data fields.`, 101);
 
+        email = email.toLowerCase().trim();
+        username = username.toLowerCase().trim();
         if (displayName == '' || !isValidDisplayName(displayName)) return response(`Display names must be 1-30 characters.`, 102);
         if (username == '' || !isValidUsername(username)) return response(`Usernames must be 4-20 characters, and start with a letter.`, 102);
         if (email == '' || !isValidEmail(email)) return response(`Please use your school "...@edu" email.`, 102);
@@ -61,6 +63,8 @@ export async function PUT(req: NextRequest) {
 
         if (typeof displayName != 'string' || typeof username != 'string' || typeof email != 'string' || typeof password != 'string') return response(`Missing data fields, go back.`, 101);
 
+        email = email.toLowerCase().trim();
+        username = username.toLowerCase().trim();
         if (displayName == '' || !isValidDisplayName(displayName)) return response(`Display names must be 1-30 characters.`, 102);
         if (username == '' || !isValidUsername(username)) return response(`Usernames must be 4-20 characters, and start with a letter.`, 102);
         if (email == '' || !isValidEmail(email)) return response(`Please use your school "...@edu" email.`, 102);
