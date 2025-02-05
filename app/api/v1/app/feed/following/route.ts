@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
             replyToId: null
         };
         const orderBy: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> = [
-            { displayDate: 'desc' },
+            { createdAt: 'desc' },
             { likeCount: 'desc' },
             { replyCount: 'desc' }
         ];

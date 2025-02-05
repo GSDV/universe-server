@@ -85,7 +85,7 @@ export const getPostWithAncestorsClient = async (where: Prisma.PostWhereUniqueIn
             ...INCLUDE_AUTHOR,
             likes: getUserLike(loggedInUserId),
             threadPosts: {
-                orderBy: { displayDate: 'asc' },
+                orderBy: { createdAt: 'asc' },
                 include: { ...INCLUDE_AUTHOR, likes: getUserLike(loggedInUserId) },
             }
         }
@@ -219,7 +219,7 @@ export const fetchClientBatchPosts = async (
     where: Prisma.PostWhereInput,
     cursor: string,
     loggedInUserId: string,
-    orderBy: (Prisma.PostOrderByWithRelationInput | Prisma.Enumerable<Prisma.PostOrderByWithRelationInput>) = { displayDate: 'desc' }
+    orderBy: (Prisma.PostOrderByWithRelationInput | Prisma.Enumerable<Prisma.PostOrderByWithRelationInput>) = { createdAt: 'desc' }
 ) => {
     const posts = await prisma.post.findMany({
         where,

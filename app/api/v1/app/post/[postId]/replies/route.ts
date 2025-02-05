@@ -27,7 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ post
         const orderBy: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> = [
             { likeCount: 'desc' },
             { replyCount: 'desc' },
-            { displayDate: 'asc' }
+            { createdAt: 'asc' }
         ];
         const { clientPosts, nextCursor, moreAvailable } = await fetchClientBatchPosts(where, cursor, loggedInId, orderBy);
 

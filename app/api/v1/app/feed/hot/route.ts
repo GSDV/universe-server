@@ -26,11 +26,11 @@ export async function GET(req: NextRequest) {
         const where: Prisma.PostWhereInput = {
             deleted: false,
             replyToId: null,
-            displayDate: { gte: cutoff },
+            createdAt: { gte: cutoff },
         };
         const orderBy: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> = [
             { likeCount: 'desc' },
-            { displayDate: 'desc' },
+            { createdAt: 'desc' },
             { replyCount: 'desc' }
         ];
         const { clientPosts, nextCursor, moreAvailable} = await fetchClientBatchPosts(where, cursor, loggedInUserId, orderBy);
