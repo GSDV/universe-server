@@ -14,7 +14,6 @@ import { hashPassword, isValidEmail, redactUserPrisma } from '@util/api/user';
 export async function GET(req: NextRequest) {
     try {
         const { userPrisma, validUserResp } = await getValidatedUserWithUni();
-        console.log(userPrisma)
         if (!userPrisma) return validUserResp;
 
         return response(`Success.`, 200, { user: userPrisma }); 
