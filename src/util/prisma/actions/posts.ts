@@ -132,18 +132,46 @@ export const updatePosts = async (where: Prisma.PostWhereInput, data: Prisma.Pos
 
 
 export const markPostDelete = async (postId: string, authorId: string) => {
-    const res = await prisma.post.updateMany({
-        where: {
-            id: postId,
-            authorId,
-            deleted: false
-        },
-        data: {
-            deleted: true,
-            pinned: false
+    await prisma.$transaction(async (tx) => {
+        const post = await tx.post.findUnique({
+            where: {
+                id: postId,
+                authorId,
+                deleted: false
+            },
+            select: {
+                replyToId: true
+            }
+        });
+
+        await tx.post.update({
+            where: {
+                id: postId,
+                authorId,
+                deleted: false
+            },
+            data: {
+                deleted: true,
+                pinned: false
+            }
+        });
+
+        if (post?.replyToId) {
+            const parentPost = await tx.post.findUnique({
+                where: { id: post.replyToId },
+                select: { replyCount: true }
+            });
+
+            if (parentPost && parentPost.replyCount > 0) {
+                await tx.post.update({
+                    where: { id: post.replyToId },
+                    data: {
+                        replyCount: { decrement: 1 }
+                    }
+                });
+            }
         }
     });
-    return res.count;
 }
 
 
