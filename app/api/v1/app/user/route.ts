@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 
-import { getUser, getValidatedUserWithUni } from '@util/prisma/actions/user';
+import { getUserWithUni, getValidatedUserWithUni } from '@util/prisma/actions/user';
 import { createAuthToken } from '@util/prisma/actions/tokens';
 
 import { CONTACT_EMAIL } from '@util/global';
@@ -33,7 +33,7 @@ export async function PUT(req: NextRequest) {
         if (email == '' || !isValidEmail(email)) return response(`Please use your school "...@edu" email.`, 102);
         if (password == '') return response(`Provide your password.`, 102);
 
-        const userPrisma = await getUser({ email });
+        const userPrisma = await getUserWithUni({ email });
 
         if (!userPrisma) return response(`Wrong email or password.`, 199);
         if (userPrisma.banned) return response(`Wrong email or password.`, 199);
