@@ -213,6 +213,57 @@ export const toggleFollow = async (targetId: string, sourceId: string, followed:
 
 
 
+export const toggleBlock = async (targetId: string, sourceId: string, blocked: boolean) => {
+    await prisma.$transaction(async (tx) => {
+        if (blocked) {
+            await tx.block.upsert({
+                where: {
+                    blockerId_blockedId: {
+                        blockerId: sourceId,
+                        blockedId: targetId
+                    }
+                },
+                create: {
+                    blockerId: sourceId,
+                    blockedId: targetId
+                },
+                update: {}
+            });
+
+            const deletedFollow = await tx.follow.deleteMany({
+                where: {
+                    followerId: sourceId,
+                    followingId: targetId
+                }
+            });            
+
+            if (deletedFollow.count > 0) {
+                await Promise.all([
+                    tx.user.update({
+                        where: { id: targetId },
+                        data: { followerCount: { decrement: 1 } }
+                    }),
+                    tx.user.update({
+                        where: { id: sourceId },
+                        data: { followingCount: { decrement: 1 } }
+                    })
+                ]);
+            }
+        } else {
+            await tx.block.delete({
+                where: {
+                    blockerId_blockedId: {
+                        blockerId: sourceId,
+                        blockedId: targetId
+                    }
+                }
+            }).catch(() => null);
+        }
+    });
+}
+
+
+
 // Mark user and all posts as delete.
 export const markUserDelete = async (userId: string) => {
     const result = await prisma.$transaction(async (tx) => {
