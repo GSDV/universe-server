@@ -60,8 +60,12 @@ export const getUserFollow = (followerId: string) => {
     return { where: { followerId } };
 }
 
-export const getUserBlock = (blockerId: string) => {
+export const getUserBlocking = (blockerId: string) => {
     return { where: { blockerId } };
+}
+
+export const getUserBlocks = (blockedId: string) => {
+    return { where: { blockedId } };
 }
 
 

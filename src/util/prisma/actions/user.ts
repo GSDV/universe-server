@@ -7,7 +7,7 @@ import { cookies } from 'next/headers';
 import { Prisma } from '@prisma/client';
 
 import { AUTH_TOKEN_COOKIE_KEY } from '@util/global';
-import { getUserBlock, getUserFollow, OMIT_USER, PROFILE_PER_SCROLL, response } from '@util/global-server';
+import { getUserBlocking, getUserBlocks, getUserFollow, OMIT_USER, PROFILE_PER_SCROLL, response } from '@util/global-server';
 
 import { isValidUser, makeClientUsers, makePasswordHash, redactUserPrisma } from '@util/api/user';
 
@@ -80,15 +80,19 @@ export const getProfileUser = async (where: Prisma.UserWhereInput, loggedInUserI
         include: {
             university: true,
             followers: getUserFollow(loggedInUserId),
-            blockedBy: getUserBlock(loggedInUserId)
+            blockedBy: getUserBlocking(loggedInUserId),
+            blocks: getUserBlocks(loggedInUserId),
         }
     });
     if (!userPrisma) return null;
 
+    // isBlocking: Logged in user is blocking this account
+    // isBlockedBy: Logged in user is blocked by this account
     const clientUserPrisma = {
         ...userPrisma,
         isFollowed: userPrisma.followers.length > 0,
-        isBlocked: userPrisma.blockedBy.length > 0
+        isBlocking: userPrisma.blockedBy.length > 0,
+        isBlockedBy: userPrisma.blocks.length > 0
     }
 
     return clientUserPrisma;
@@ -230,14 +234,20 @@ export const toggleBlock = async (targetId: string, sourceId: string, blocked: b
                 update: {}
             });
 
-            const deletedFollow = await tx.follow.deleteMany({
+            const sourceToTargetFollow = await tx.follow.deleteMany({
                 where: {
                     followerId: sourceId,
                     followingId: targetId
                 }
-            });            
+            });
+            const targetToSourceFollow = await tx.follow.deleteMany({
+                where: {
+                    followerId: sourceId,
+                    followingId: targetId
+                }
+            });
 
-            if (deletedFollow.count > 0) {
+            if (sourceToTargetFollow.count > 0) {
                 await Promise.all([
                     tx.user.update({
                         where: { id: targetId },
@@ -245,6 +255,19 @@ export const toggleBlock = async (targetId: string, sourceId: string, blocked: b
                     }),
                     tx.user.update({
                         where: { id: sourceId },
+                        data: { followingCount: { decrement: 1 } }
+                    })
+                ]);
+            }
+
+            if (targetToSourceFollow.count > 0) {
+                await Promise.all([
+                    tx.user.update({
+                        where: { id: sourceId },
+                        data: { followerCount: { decrement: 1 } }
+                    }),
+                    tx.user.update({
+                        where: { id: targetId },
                         data: { followingCount: { decrement: 1 } }
                     })
                 ]);

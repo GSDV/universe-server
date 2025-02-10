@@ -23,7 +23,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         const clientUserPrisma = {
             ...redactedUserPrisma,
             isFollowed: userPrisma.isFollowed,
-            isBlocked: userPrisma.isBlocked
+            isBlocking: userPrisma.isBlocking,
+            isBlockedBy: userPrisma.isBlockedBy
         }
 
         const ownAccount = clientUserPrisma.id === loggedInId;
