@@ -17,6 +17,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ user
 
         const blockerId = userPrisma.id;
         const blockedId = (await params).userId;
+        if (blockerId === blockedId) return response(`Same user.`, 406);
 
         await toggleBlock(blockedId, blockerId, didBlock);
 
