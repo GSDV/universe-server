@@ -285,6 +285,18 @@ export const toggleBlock = async (targetId: string, sourceId: string, blocked: b
     });
 }
 
+export const findBlockRelation = async (targetId: string, sourceId: string) => {
+    const blockRelationship = await prisma.block.findFirst({
+        where: {
+            OR: [
+                { blockerId: targetId, blockedId: sourceId },
+                { blockerId: sourceId, blockedId: targetId }
+            ]
+        }
+    });
+    return blockRelationship;
+}
+
 
 
 // Mark user and all posts as delete.
