@@ -1,11 +1,12 @@
 import { NextRequest } from 'next/server';
 
-import { getValidatedUser } from '@util/prisma/actions/user';
+import { findBlockRelation, getValidatedUser } from '@util/prisma/actions/user';
 import { createReply, getPostWithAncestors } from '@util/prisma/actions/posts';
 
 import { response } from '@util/global-server';
 
 import { validateCreateReplyData } from '@util/api/posts';
+import { prisma } from '@util/prisma/client';
 
 
 
@@ -27,7 +28,13 @@ export async function POST(req: NextRequest) {
         if (postIncludesOtherKey) return response('Something went wrong.', 101);
 
         const parentPost = await getPostWithAncestors({ id: parentPostId });
-        if (!parentPost || parentPost.deleted) return response(`Parent post does not exist`, 404);
+        if (!parentPost || parentPost.deleted) return response(`Parent post does not exist.`, 404);
+
+        const blockRelationship = await findBlockRelation(parentPost.author.id, userPrisma.id);
+        if (blockRelationship) {
+            if (blockRelationship.blockedId === userPrisma.id) return response(`You are blocked by this user.`, 404);
+            if (blockRelationship.blockedId === parentPost.author.id) return response(`You have blocked this user.`, 404);
+        }
 
         const reply = await createReply(userPrisma.id, replyData, parentPost);
 
