@@ -242,8 +242,8 @@ export const toggleBlock = async (targetId: string, sourceId: string, blocked: b
             });
             const targetToSourceFollow = await tx.follow.deleteMany({
                 where: {
-                    followerId: sourceId,
-                    followingId: targetId
+                    followerId: targetId,
+                    followingId: sourceId
                 }
             });
 
