@@ -57,9 +57,11 @@ export const getUserLike = (userId: string) => {
 
 
 export const getUserFollow = (followerId: string) => {
-    return {
-        where: { followerId }
-    };
+    return { where: { followerId } };
+}
+
+export const getUserBlock = (blockerId: string) => {
+    return { where: { blockerId } };
 }
 
 

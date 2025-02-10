@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 
-import { getUserWithUniAndFollows, getValidatedUser } from '@util/prisma/actions/user';
+import { getProfileUser, getValidatedUser } from '@util/prisma/actions/user';
 
 import { response } from '@util/global-server';
 
@@ -16,13 +16,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         const { userPrisma: loggedInUserPrisma } = await getValidatedUser();
         const loggedInId= (!loggedInUserPrisma) ? '' : loggedInUserPrisma.id;
 
-        const userPrisma = await getUserWithUniAndFollows({ username }, loggedInId);
+        const userPrisma = await getProfileUser({ username }, loggedInId);
         if (!userPrisma) return response(`Account does not exist.`, 404);
 
         const redactedUserPrisma = redactUserPrisma(userPrisma);
         const clientUserPrisma = {
             ...redactedUserPrisma,
-            isFollowed: userPrisma.isFollowed
+            isFollowed: userPrisma.isFollowed,
+            isBlocked: userPrisma.isBlocked
         }
 
         const ownAccount = clientUserPrisma.id === loggedInId;

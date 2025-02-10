@@ -7,7 +7,7 @@ import { cookies } from 'next/headers';
 import { Prisma } from '@prisma/client';
 
 import { AUTH_TOKEN_COOKIE_KEY } from '@util/global';
-import { getUserFollow, OMIT_USER, PROFILE_PER_SCROLL, response } from '@util/global-server';
+import { getUserBlock, getUserFollow, OMIT_USER, PROFILE_PER_SCROLL, response } from '@util/global-server';
 
 import { isValidUser, makeClientUsers, makePasswordHash, redactUserPrisma } from '@util/api/user';
 
@@ -74,19 +74,21 @@ export const getUserWithUni = async (where: Prisma.UserWhereInput) => {
 
 
 
-export const getUserWithUniAndFollows = async (where: Prisma.UserWhereInput, loggedInUserId: string) => {
+export const getProfileUser = async (where: Prisma.UserWhereInput, loggedInUserId: string) => {
     const userPrisma = await prisma.user.findFirst({
         where,
         include: {
             university: true,
-            followers: getUserFollow(loggedInUserId)
+            followers: getUserFollow(loggedInUserId),
+            blockedBy: getUserBlock(loggedInUserId)
         }
     });
     if (!userPrisma) return null;
 
     const clientUserPrisma = {
         ...userPrisma,
-        isFollowed: userPrisma.followers.length > 0
+        isFollowed: userPrisma.followers.length > 0,
+        isBlocked: userPrisma.blockedBy.length > 0
     }
 
     return clientUserPrisma;
