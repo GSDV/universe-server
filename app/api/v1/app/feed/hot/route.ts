@@ -27,6 +27,12 @@ export async function GET(req: NextRequest) {
             deleted: false,
             replyToId: null,
             createdAt: { gte: cutoff },
+            author: {
+                AND: [
+                    { blockedBy: { none: { blockerId: loggedInUserId } } },
+                    { blocks: { none: { blockedId: loggedInUserId } } }
+                ]
+            }
         };
         const orderBy: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> = [
             { likeCount: 'desc' },

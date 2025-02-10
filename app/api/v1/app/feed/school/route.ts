@@ -47,7 +47,11 @@ export async function GET(req: NextRequest) {
             replyToId: null,
             createdAt: { gte: cutoff },
             author: {
-                email: { endsWith: domain }
+                email: { endsWith: domain },
+                AND: [
+                    { blockedBy: { none: { blockerId: loggedInUserId } } },
+                    { blocks: { none: { blockedId: loggedInUserId } } }
+                ]
             }
         };
         const orderBy: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> = [

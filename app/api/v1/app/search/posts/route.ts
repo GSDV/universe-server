@@ -27,7 +27,13 @@ export async function GET(req: NextRequest) {
         const where: Prisma.PostWhereInput = {
             replyToId: null,
             deleted: false,
-            content: { contains: query, mode: 'insensitive' }
+            content: { contains: query, mode: 'insensitive' },
+            author: {
+                AND: [
+                    { blockedBy: { none: { blockerId: loggedInUserId } } },
+                    { blocks: { none: { blockedId: loggedInUserId } } }
+                ]
+            }
         };
         const { clientPosts, nextCursor, moreAvailable} = await fetchClientBatchPosts(where, cursor, loggedInUserId);
 

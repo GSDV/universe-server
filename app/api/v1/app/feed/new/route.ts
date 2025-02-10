@@ -22,7 +22,13 @@ export async function GET(req: NextRequest) {
 
         const where: Prisma.PostWhereInput = {
             deleted: false,
-            replyToId: null
+            replyToId: null,
+            author: {
+                AND: [
+                    { blockedBy: { none: { blockerId: loggedInUserId } } },
+                    { blocks: { none: { blockedId: loggedInUserId } } }
+                ]
+            }
         };
         const orderBy: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> = [
             { createdAt: 'desc' },

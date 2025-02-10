@@ -74,7 +74,13 @@ export async function GET(req: NextRequest) {
                             replyToId: null,
                             createdAt: { gte: cutoff },
                             lat: { gte: lat_ptr / GRID_SIZE, lte: (lat_ptr+lat_step) / GRID_SIZE },
-                            lng: { gte: lng_ptr / GRID_SIZE, lte: (lng_ptr+lng_step) / GRID_SIZE }
+                            lng: { gte: lng_ptr / GRID_SIZE, lte: (lng_ptr+lng_step) / GRID_SIZE },
+                            author: {
+                                AND: [
+                                    { blockedBy: { none: { blockerId: loggedInUserId } } },
+                                    { blocks: { none: { blockedId: loggedInUserId } } }
+                                ]
+                            }
                         },
                         include: { ...INCLUDE_AUTHOR, likes: getUserLike(loggedInUserId) },
                         orderBy: [{likeCount: 'desc'}, {replyCount: 'desc'}, {createdAt: 'desc' }],
