@@ -20,8 +20,8 @@ export async function GET(req: NextRequest) {
         if (!userPrisma) return validUserResp;
         const loggedInUserId = userPrisma.id;
 
-        // Posts need to be less than 1 day old in order to be considered trending.
-        const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        // Posts need to be less than 2 days old in order to be considered trending.
+        const cutoff = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
 
         const where: Prisma.PostWhereInput = {
             deleted: false,
