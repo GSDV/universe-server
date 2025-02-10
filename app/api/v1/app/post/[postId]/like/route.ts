@@ -20,6 +20,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pos
         const { userPrisma, validUserResp } = await getValidatedUser();
         if (!userPrisma) return validUserResp;
 
+        // Currently not checking if users are blocking each other. Blocked users can still like each others posts.
+        // const blockRelationship = await findBlockRelation(parentPost.author.id, userPrisma.id);
+        // if (blockRelationship) {
+        //     if (blockRelationship.blockedId === userPrisma.id) return response(`You are blocked by this user.`, 404);
+        //     if (blockRelationship.blockedId === parentPost.author.id) return response(`You have blocked this user.`, 404);
+        // }
+
         // Note: we do NOT need to check if the post actually exists.
         // Prisma transactions (used in likePost and unlikePost) are atomic.
         if (liked) waitUntil(likePost(postId, userPrisma.id));
