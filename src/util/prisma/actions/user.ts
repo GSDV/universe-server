@@ -175,15 +175,16 @@ export const toggleFollow = async (targetId: string, sourceId: string, followed:
                 update: {}
             });
 
-            await tx.user.update({
-                where: { id: targetId },
-                data: { followerCount: { increment: 1 } }
-            });
-
-            await tx.user.update({
-                where: { id: sourceId },
-                data: { followingCount: { increment: 1 } }
-            });
+            await Promise.all([
+                tx.user.update({
+                    where: { id: targetId },
+                    data: { followerCount: { increment: 1 } }
+                }),
+                tx.user.update({
+                    where: { id: sourceId },
+                    data: { followingCount: { increment: 1 } }
+                })
+            ]);
         } else {
             const followRecord = await tx.follow.delete({
                 where: {
@@ -195,19 +196,19 @@ export const toggleFollow = async (targetId: string, sourceId: string, followed:
             }).catch(() => null);
 
             if (followRecord) {
-                await tx.user.update({
-                    where: { id: targetId },
-                    data: { followerCount: { decrement: 1 } }
-                });
-
-                await tx.user.update({
-                    where: { id: sourceId },
-                    data: { followingCount: { decrement: 1 } }
-                });
+                await Promise.all([
+                    tx.user.update({
+                        where: { id: targetId },
+                        data: { followerCount: { decrement: 1 } }
+                    }),
+                    tx.user.update({
+                        where: { id: sourceId },
+                        data: { followingCount: { decrement: 1 } }
+                    })
+                ]);
             }
         }
     });
-
 }
 
 
