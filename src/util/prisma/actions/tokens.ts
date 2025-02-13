@@ -80,7 +80,7 @@ export const markActivateTokenAsExpired = async (tokenId: string) => {
 
 export const createRPToken = async (userId: string) => {
     const token = uuidv4();
-    await prisma.authToken.create({
+    await prisma.rPToken.create({
         data: {
             token: token,
             user: { connect: { id: userId } }
