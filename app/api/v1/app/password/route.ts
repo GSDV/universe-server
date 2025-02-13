@@ -47,7 +47,6 @@ export async function PUT(req: NextRequest) {
         if (newPassword == '' || !isValidPassword(newPassword)) return response(`Use a password with 5 to 50 characters, consisting only of letters, numbers, and the symbols #, $, %, and &.`, 102);
 
         const rpTokenPrisma = await getRPToken({ token: rpToken });
-        console.log(rpToken, rpTokenPrisma?.token, isRPTokenExpired(rpTokenPrisma));
         if (!rpTokenPrisma || isRPTokenExpired(rpTokenPrisma)) return response(`Reset password token is expired.`, 102);
         const userPrisma = rpTokenPrisma.user;
         const isValid = isValidUser(userPrisma);
