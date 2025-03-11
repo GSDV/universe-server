@@ -30,7 +30,7 @@ They must be scaled and rounded up or down, depending on the corner.
 
 
 
-// Used for fetching hot/trending posts to display on the feed screen.
+// Used for fetching hot/trending posts to display on the map screen.
 export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
