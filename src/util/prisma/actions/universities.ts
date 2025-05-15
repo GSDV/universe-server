@@ -4,6 +4,8 @@ import { Prisma } from '@prisma/client';
 
 import { prisma } from '@util/prisma/client';
 
+import { PROFILE_PER_SCROLL } from '@util/global-server';
+
 
 
 export const getUni = async (where: Prisma.UniversityWhereUniqueInput) => {
@@ -59,4 +61,25 @@ export const deleteUni = async (where: Prisma.UniversityWhereUniqueInput) => {
         }
     });
     return uniPrisma;
+}
+
+
+
+export const fetchClientUniverisitiesBatch = async (where: Prisma.UniversityWhereInput, cursor: string, loggedInUserId: string) => {
+    const clientUniversities = await prisma.university.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: PROFILE_PER_SCROLL + 1,
+        ...(cursor && {
+            cursor: { id: cursor },
+            skip: 1,
+        })
+    });
+
+    const nextCursor = (clientUniversities.length!=0) ? clientUniversities[clientUniversities.length - 1].id : '';
+
+    const moreAvailable = clientUniversities.length > PROFILE_PER_SCROLL;
+    if (moreAvailable) clientUniversities.pop();
+
+    return { clientUniversities, nextCursor, moreAvailable };
 }
