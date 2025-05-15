@@ -8,7 +8,7 @@ import { response } from '@util/global-server';
 
 
 
-// Used for searching through posts with a query
+// Used for searching through users with a query
 export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
