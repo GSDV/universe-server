@@ -22,7 +22,6 @@ export async function GET(req: NextRequest) {
 
         const { userPrisma, validUserResp } = await getValidatedUser();
         if (!userPrisma) return validUserResp;
-        const loggedInUserId = userPrisma.id;
 
 
         const where: Prisma.UniversityWhereInput = {
@@ -31,7 +30,7 @@ export async function GET(req: NextRequest) {
                 { domain: { contains: query, mode: 'insensitive' } }
             ]
         }
-        const { clientUniversities, nextCursor, moreAvailable} = await fetchClientUniverisitiesBatch(where, cursor, loggedInUserId);
+        const { clientUniversities, nextCursor, moreAvailable} = await fetchClientUniverisitiesBatch(where, cursor);
 
         return response(`Success.`, 200, { universities: clientUniversities, nextCursor, moreAvailable });
     } catch (err) {

@@ -65,7 +65,7 @@ export const deleteUni = async (where: Prisma.UniversityWhereUniqueInput) => {
 
 
 
-export const fetchClientUniverisitiesBatch = async (where: Prisma.UniversityWhereInput, cursor: string, loggedInUserId: string) => {
+export const fetchClientUniverisitiesBatch = async (where: Prisma.UniversityWhereInput, cursor: string) => {
     const clientUniversities = await prisma.university.findMany({
         where,
         orderBy: { createdAt: 'desc' },
