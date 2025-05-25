@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 
 
-export const API_VERSION = 'v1';
+export const API_VERSION = 'v2';
 
 
 
